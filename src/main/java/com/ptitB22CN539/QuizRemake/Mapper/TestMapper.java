@@ -1,0 +1,42 @@
+package com.ptitB22CN539.QuizRemake.Mapper;
+
+import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
+import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class TestMapper {
+    private final ModelMapper modelMapper;
+    private final QuestionMapper questionMapper;
+    private final IQuestionService questionService;
+
+    public TestEntity requestToEntity(TestRequest testRequest) {
+        TestEntity testEntity = modelMapper.map(testRequest, TestEntity.class);
+        List<QuestionEntity> listQuestion = new ArrayList<>();
+        for (String questionId : testRequest.getQuestionIds()) {
+            QuestionEntity questionEntity = questionService.findById(questionId);
+            listQuestion.add(questionEntity);
+        }
+        testEntity.setQuestions(listQuestion);
+        return testEntity;
+    }
+
+    public TestResponse entityToResponse(TestEntity testEntity) {
+        TestResponse testResponse = modelMapper.map(testEntity, TestResponse.class);
+        List< QuestionResponse> listQuestion = testEntity.getQuestions().stream()
+                .map(questionMapper::entityToResponse)
+                .toList();
+        testResponse.setQuestions(listQuestion);
+        return testResponse;
+    }
+}
