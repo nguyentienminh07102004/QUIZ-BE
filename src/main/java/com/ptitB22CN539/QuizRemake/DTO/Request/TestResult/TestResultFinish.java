@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class TestResultFinish {
     @NotNull
     @NotBlank
     private String id;
-    private Map<String, List<String>> answerSelecteds;
+    private List<AnswerSelectedRequest> answerSelecteds;
     @NotNull
     private Date finishDate;
 }

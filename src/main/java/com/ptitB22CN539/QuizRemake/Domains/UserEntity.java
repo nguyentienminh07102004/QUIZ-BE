@@ -1,5 +1,6 @@
 package com.ptitB22CN539.QuizRemake.Domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ptitB22CN539.QuizRemake.BeanApp.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,9 +50,11 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @Cascade(value = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JsonIgnore
     private List<JwtEntity> listJwts;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @Cascade(value = {CascadeType.REMOVE})
+    @JsonIgnore
     private List<TestResultEntity> testResults;
 }

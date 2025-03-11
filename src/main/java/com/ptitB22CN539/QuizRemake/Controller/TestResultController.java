@@ -3,6 +3,7 @@ package com.ptitB22CN539.QuizRemake.Controller;
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
 import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestResultMapper;
 import com.ptitB22CN539.QuizRemake.Service.TestResult.ITestResultService;
@@ -10,6 +11,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +43,29 @@ public class TestResultController {
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .data(testResultMapper.entityToResponse(entity))
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<APIResponse> findTestById(@PathVariable String id) {
+        TestResultEntity testResultEntity = testResultService.findById(id);
+        TestResultResponse testResultResponse = testResultMapper.entityToResponse(testResultEntity);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(testResultResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/count")
+    public ResponseEntity<APIResponse> countAllTestResult() {
+        Long countAllTestResult = testResultService.countAllTestResult();
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(countAllTestResult)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

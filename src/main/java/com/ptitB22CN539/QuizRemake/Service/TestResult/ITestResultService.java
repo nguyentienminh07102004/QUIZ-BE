@@ -8,4 +8,5 @@ public interface ITestResultService {
     TestResultEntity startTestResult(TestResultStart testResultStart);
     TestResultEntity finishTest(TestResultFinish testResultFinish);
     TestResultEntity findById(String id);
+    Long countAllTestResult();
 }

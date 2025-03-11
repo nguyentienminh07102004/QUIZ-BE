@@ -8,4 +8,5 @@ public interface ICategoryService {
     CategoryEntity saveCategory(CategoryRequest category);
     CategoryEntity findByCode(String code);
     Page<CategoryEntity> findAll(Integer page, Integer limit);
+    Long countAllCategory();
 }

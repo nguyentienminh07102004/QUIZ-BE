@@ -35,10 +35,6 @@ public class QuestionEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "category_code", referencedColumnName = "code")
-    private CategoryEntity category;
-
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @Cascade(value = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     private List<AnswerEntity> answers;
@@ -49,4 +45,8 @@ public class QuestionEntity {
 
     @OneToMany(mappedBy = "question")
     private List<AnswerSelectedEntity> answerSelecteds;
+
+    @ManyToOne
+    @JoinColumn(name = "category_code", referencedColumnName = "code")
+    private CategoryEntity category;
 }

@@ -55,20 +55,30 @@ public class WebSecurityConfig {
                         request
                                 .requestMatchers(HttpMethod.POST, "/%s/users/login/**".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/%s/users/register".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/users/".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/users/count".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/%s/users/change-status/{ids}".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/%s/users/upload-avatar".formatted(API_PREFIX)).permitAll()
 
                                 .requestMatchers(HttpMethod.GET, "/%s/categories/".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/%s/categories/".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/categories/count".formatted(API_PREFIX)).permitAll()
 
                                 .requestMatchers(HttpMethod.GET, "/%s/questions/".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/%s/questions/".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/questions/count".formatted(API_PREFIX)).permitAll()
 
                                 .requestMatchers(HttpMethod.GET, "/%s/tests/".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/%s/tests/{id}".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/%s/tests/".formatted(API_PREFIX)).hasRole(ConstantConfig.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.GET, "/%s/tests/count".formatted(API_PREFIX)).permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "/%s/test-result/start".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/%s/test-result/finish".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/test-result/{id}".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/test-result/count".formatted(API_PREFIX)).permitAll()
 
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2

@@ -15,13 +15,16 @@ import java.util.List;
 @Getter
 @Setter
 public class CategoryEntity {
-    @Column(name = "name", nullable = false)
-    private String name;
     @Id
     @Column(name = "code", unique = true)
     private String code;
+    @Column(name = "name", nullable = false)
+    private String name;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @OneToMany(mappedBy = "category")
+    private List<TestEntity> tests;
 
     @OneToMany(mappedBy = "category")
     private List<QuestionEntity> questions;

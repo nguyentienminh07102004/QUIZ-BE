@@ -43,6 +43,9 @@ public class UserMapper {
         UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
         RoleResponse roleResponse = roleMapper.entityToResponse(userEntity.getRole());
         userResponse.setRole(roleResponse);
+        if (userEntity.getAvatar() != null && !userEntity.getAvatar().contains("https")) {
+            userResponse.setAvatar("https://lh3.google.com/u/0/d/%s".formatted(userEntity.getAvatar()));
+        }
         return userResponse;
     }
 }

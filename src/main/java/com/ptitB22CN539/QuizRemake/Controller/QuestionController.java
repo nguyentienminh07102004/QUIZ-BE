@@ -14,10 +14,10 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,13 +40,24 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<APIResponse> findQuestion(@RequestPart QuestionSearchRequest questionSearchRequest) {
+    public ResponseEntity<APIResponse> findQuestion(@ModelAttribute QuestionSearchRequest questionSearchRequest) {
         Page<QuestionEntity> entityPage = questionService.findAll(questionSearchRequest);
         PagedModel<QuestionResponse> responsePagedModel = new PagedModel<>(entityPage.map(questionMapper::entityToResponse));
         APIResponse response = APIResponse.builder()
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .data(responsePagedModel)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/count")
+    public ResponseEntity<APIResponse> countAllQuestions() {
+        Long countAllQuestions = questionService.countAllQuestions();
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(countAllQuestions)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

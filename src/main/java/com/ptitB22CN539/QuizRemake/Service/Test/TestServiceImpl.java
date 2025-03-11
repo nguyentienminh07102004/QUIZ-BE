@@ -3,7 +3,6 @@ package com.ptitB22CN539.QuizRemake.Service.Test;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
@@ -51,7 +50,7 @@ public class TestServiceImpl implements ITestService {
                 predicates.add(builder.equal(root.get(TestEntity_.difficulty), testSearchRequest.getDifficulty()));
             }
             if (StringUtils.hasText(testSearchRequest.getCategory())) {
-                predicates.add(builder.equal(root.get(TestEntity_.QUESTIONS).get(QuestionEntity_.CATEGORY).get(CategoryEntity_.CODE),
+                predicates.add(builder.equal(root.get(TestEntity_.CATEGORY).get(CategoryEntity_.CODE),
                         testSearchRequest.getCategory()));
             }
             if (query != null) {
@@ -69,5 +68,11 @@ public class TestServiceImpl implements ITestService {
     public TestEntity findById(String id) {
         return this.testRepository.findById(id)
                 .orElseThrow(() -> new DataInvalidException(ExceptionVariable.TEST_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long countAllTest() {
+        return testRepository.count();
     }
 }

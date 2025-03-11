@@ -5,7 +5,6 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.AnswerResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
 import com.ptitB22CN539.QuizRemake.Domains.AnswerEntity;
-import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,7 @@ public class QuestionMapper {
             listAnswer.add(answerEntity);
         }
         questionEntity.setAnswers(listAnswer);
-        CategoryEntity categoryEntity = categoryService.findByCode(question.getCategoryCode());
-        questionEntity.setCategory(categoryEntity);
+        questionEntity.setCategory(categoryService.findByCode(question.getCategoryCode()));
         return questionEntity;
     }
 

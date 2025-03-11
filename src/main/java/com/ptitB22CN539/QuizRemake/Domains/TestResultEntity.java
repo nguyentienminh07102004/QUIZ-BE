@@ -1,7 +1,10 @@
 package com.ptitB22CN539.QuizRemake.Domains;
 
+import com.ptitB22CN539.QuizRemake.BeanApp.TestResultStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,4 +44,7 @@ public class TestResultEntity {
     @OneToMany(mappedBy = "testResult", orphanRemoval = true)
     @Cascade(value = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private List<AnswerSelectedEntity> answerSelecteds;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private TestResultStatus status;
 }

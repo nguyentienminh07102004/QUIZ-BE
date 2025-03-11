@@ -50,4 +50,15 @@ public class CategoryController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping(value = "/count")
+    public ResponseEntity<APIResponse> countAllCategory() {
+        Long countAllCategory = categoryService.countAllCategory();
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.CREATED.value())
+                .message("SUCCESS")
+                .data(countAllCategory)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }

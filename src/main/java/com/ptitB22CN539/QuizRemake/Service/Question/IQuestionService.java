@@ -10,4 +10,5 @@ public interface IQuestionService {
     QuestionEntity findById(String id);
     boolean existsById(String id);
     Page<QuestionEntity> findAll(QuestionSearchRequest searchRequest);
+    Long countAllQuestions();
 }

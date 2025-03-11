@@ -34,4 +34,10 @@ public class CategoryServiceImpl implements ICategoryService {
     public Page<CategoryEntity> findAll(Integer page, Integer limit) {
         return categoryRepository.findAll(PaginationUtils.getPageable(page, limit));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long countAllCategory() {
+        return categoryRepository.count();
+    }
 }

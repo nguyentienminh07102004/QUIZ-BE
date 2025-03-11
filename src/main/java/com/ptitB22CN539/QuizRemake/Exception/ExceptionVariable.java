@@ -24,6 +24,9 @@ public enum ExceptionVariable {
 
     QUESTION_HAS_LEAST_ONE_CORRECT_ANSWER(400, "Question has least one correct answer", HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(400, "Question is not exists", HttpStatus.BAD_REQUEST),
+    QUESTION_TITLE_NOT_NULL_EMPTY(400, "Question title is null or empty", HttpStatus.BAD_REQUEST),
+    QUESTION_CATEGORY_NOT_NULL_EMPTY(400, "Question category is null or empty", HttpStatus.BAD_REQUEST),
+    QUESTION_CONTENT_NOT_NULL_EMPTY(400, "Question content is null or empty", HttpStatus.BAD_REQUEST),
 
     CATEGORY_NOT_FOUND(400, "Category is not exists", HttpStatus.BAD_REQUEST),
 

@@ -1,9 +1,9 @@
 package com.ptitB22CN539.QuizRemake.Domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,10 +29,6 @@ public class RoleEntity {
     private String code;
 
     @OneToMany(mappedBy = "role", targetEntity = UserEntity.class)
+    @JsonIgnore
     private List<UserEntity> users;
-
-    public RoleEntity(String name, String code) {
-        this.name = name;
-        this.code = code;
-    }
 }

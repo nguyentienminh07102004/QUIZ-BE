@@ -5,6 +5,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,8 @@ import java.util.List;
 public class TestMapper {
     private final ModelMapper modelMapper;
     private final QuestionMapper questionMapper;
+    private final CategoryMapper categoryMapper;
+    private final ICategoryService categoryService;
     private final IQuestionService questionService;
 
     public TestEntity requestToEntity(TestRequest testRequest) {
@@ -27,6 +30,7 @@ public class TestMapper {
             QuestionEntity questionEntity = questionService.findById(questionId);
             listQuestion.add(questionEntity);
         }
+        testEntity.setCategory(categoryService.findByCode(testRequest.getCategoryCode()));
         testEntity.setQuestions(listQuestion);
         return testEntity;
     }
@@ -36,6 +40,7 @@ public class TestMapper {
         List< QuestionResponse> listQuestion = testEntity.getQuestions().stream()
                 .map(questionMapper::entityToResponse)
                 .toList();
+        testResponse.setCategory(categoryMapper.entityToResponse(testEntity.getCategory()));
         testResponse.setQuestions(listQuestion);
         return testResponse;
     }

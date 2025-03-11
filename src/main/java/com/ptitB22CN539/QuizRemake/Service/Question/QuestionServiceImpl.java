@@ -5,6 +5,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionSearchRequest;
 import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity_;
+import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.QuestionMapper;
@@ -57,12 +58,18 @@ public class QuestionServiceImpl implements IQuestionService {
                         String.join("", "%", searchRequest.getId(), "%")));
             }
             if (StringUtils.hasText(searchRequest.getCategoryCode())) {
-                predicate = builder.and(builder.equal(root.get(QuestionEntity_.CATEGORY).get(CategoryEntity_.CODE),
+                predicate = builder.and(builder.equal(root.get(TestEntity_.CATEGORY).get(CategoryEntity_.CODE),
                         searchRequest.getCategoryCode()));
             }
             return predicate;
         };
         return questionRepository.findAll(specification,
                 PaginationUtils.getPageable(searchRequest.getPage(), searchRequest.getLimit()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long countAllQuestions() {
+        return questionRepository.count();
     }
 }

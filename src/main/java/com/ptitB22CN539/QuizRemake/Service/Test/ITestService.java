@@ -9,4 +9,5 @@ public interface ITestService {
     TestEntity saveTest(TestRequest testRequest);
     Page<TestEntity> findAll(TestSearchRequest testSearchRequest);
     TestEntity findById(String id);
+    Long countAllTest();
 }

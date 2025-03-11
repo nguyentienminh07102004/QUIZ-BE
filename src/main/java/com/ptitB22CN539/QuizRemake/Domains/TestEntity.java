@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -46,4 +47,8 @@ public class TestEntity {
     @OneToMany(mappedBy = "test", orphanRemoval = true)
     @Cascade(value = {CascadeType.REMOVE})
     private List<TestResultEntity> testResults;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_code", referencedColumnName = "code")
+    private CategoryEntity category;
 }

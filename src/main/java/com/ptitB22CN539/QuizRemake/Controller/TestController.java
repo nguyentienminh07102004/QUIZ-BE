@@ -63,4 +63,15 @@ public class TestController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping(value = "/count")
+    public ResponseEntity<APIResponse> countAllTest() {
+        Long countAllQuestions = testService.countAllTest();
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .data(countAllQuestions)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

@@ -19,5 +19,6 @@ public class TestResponse {
     private String title;
     private String description;
     private Difficulty difficulty;
+    private CategoryResponse category;
     private List<QuestionResponse> questions;
 }

@@ -6,18 +6,28 @@ import com.ptitB22CN539.QuizRemake.BeanApp.UserStatus;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
 import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
+import com.ptitB22CN539.QuizRemake.Domains.UserEntity_;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Jwt.JwtGenerator;
 import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
 import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;
 import com.ptitB22CN539.QuizRemake.Repository.IUserRepository;
+import com.ptitB22CN539.QuizRemake.Utils.FileGoogleDrive;
+import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -29,11 +39,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -156,8 +168,22 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<UserEntity> getAllUsers() {
-        return List.of();
+    @Transactional(readOnly = true)
+    public Page<UserEntity> getAllUsers(UserSearchRequest request) {
+        Specification<UserEntity> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (StringUtils.hasText(request.getEmail())) {
+                predicates.add(criteriaBuilder.like(root.get(UserEntity_.EMAIL),
+                        String.join("", "%", request.getEmail(), "%")));
+            }
+            if (StringUtils.hasText(request.getFullName())) {
+                predicates.add(criteriaBuilder.like(root.get(UserEntity_.FULL_NAME),
+                        String.join("", "%", request.getFullName(), "%")));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Pageable pageable = PaginationUtils.getPageable(request.getPage(), request.getLimit(), Sort.by(Sort.Direction.ASC, UserEntity_.FULL_NAME));
+        return userRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -171,10 +197,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @SuppressWarnings(value = "rawtypes")
     public JwtEntity loginSocial(UserSocialLogin userSocialLogin) {
-        WebClient webClient = WebClient.builder()
-                .baseUrl("https://www.googleapis.com/oauth2/v4/token")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .build();
+        WebClient webClient = WebClient.create();
         MultiValueMap<String, String> values = new LinkedMultiValueMap<>();
         values.add(OAuth2ParameterNames.CLIENT_ID, clientId);
         values.add(OAuth2ParameterNames.CLIENT_SECRET, clientSecret);
@@ -182,8 +205,10 @@ public class UserServiceImpl implements IUserService {
         values.add(OAuth2ParameterNames.REDIRECT_URI, "http://localhost:3000/login");
         values.add(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
         WebClient.RequestHeadersSpec<?> headersSpec = webClient.method(HttpMethod.POST)
+                .uri("https://www.googleapis.com/oauth2/v4/token")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(BodyInserters.fromMultipartData(values));
-        Mono<Map> response = headersSpec.exchangeToMono(res -> {
+        Mono<Map> responseAccessToken = headersSpec.exchangeToMono(res -> {
             if (res.statusCode().is2xxSuccessful()) {
                 return res.bodyToMono(Map.class);
             } else if (res.statusCode().is4xxClientError()) {
@@ -192,24 +217,47 @@ public class UserServiceImpl implements IUserService {
                 throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
             }
         });
-        String accessToken = Objects.requireNonNull(response.block()).get(OAuth2ParameterNames.ACCESS_TOKEN).toString();
-        webClient = WebClient.builder()
-                .baseUrl("https://www.googleapis.com/oauth2/v3/userinfo")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .build();
-        response = webClient.method(HttpMethod.GET).exchangeToMono(res -> {
-            if (res.statusCode().is2xxSuccessful()) {
-                return res.bodyToMono(Map.class);
-            } else {
-                throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
-            }
-        });
-        String email = Objects.requireNonNull(response.block()).get("email").toString();
+        String accessToken = Objects.requireNonNull(responseAccessToken.block()).get(OAuth2ParameterNames.ACCESS_TOKEN).toString();
+        Mono<Map> responseUserInfo = webClient.method(HttpMethod.GET)
+                .uri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .exchangeToMono(res -> {
+                    if (res.statusCode().is2xxSuccessful()) {
+                        return res.bodyToMono(Map.class);
+                    } else {
+                        throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
+                    }
+                });
+        Map userInfo = responseUserInfo.block();
+        String email = Objects.requireNonNull(userInfo).get("email").toString();
         if (userRepository.existsByEmail(email)) {
             return this.login(new UserLoginRequest(email, null, true));
         }
-        UserEntity user = userMapper.registerToEntity(new UserRegisterRequest(null, email, ConstantConfig.DEFAULT_PASSWORD, ConstantConfig.DEFAULT_PASSWORD, null, UserStatus.ACTIVE));
+        String fullName = Objects.requireNonNull(userInfo).get("name").toString();
+        String avatar = Objects.requireNonNull(userInfo).get("picture").toString();
+        UserEntity user = userMapper.registerToEntity(new UserRegisterRequest(fullName, email, ConstantConfig.DEFAULT_PASSWORD, ConstantConfig.DEFAULT_PASSWORD, null, UserStatus.ACTIVE));
+        user.setAvatar(avatar);
         userRepository.save(user);
         return jwtGenerator.generateJwtEntity(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long countALlUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    @Transactional
+    public UserEntity uploadAvatar(UserUploadAvatarRequest avatar) {
+        String email = avatar.getEmail() == null ? SecurityContextHolder.getContext().getAuthentication().getName() : avatar.getEmail();
+        UserEntity user = this.getUserByEmail(email);
+        // delete file if exists and not login social
+        if (user.getAvatar() != null && !user.getAvatar().contains("https")) {
+            FileGoogleDrive.deleteAvatar(user.getAvatar());
+        }
+        String id = FileGoogleDrive.uploadFileGoogleDrive(avatar.getAvatar());
+        user.setAvatar(id);
+        return userRepository.save(user);
     }
 }
