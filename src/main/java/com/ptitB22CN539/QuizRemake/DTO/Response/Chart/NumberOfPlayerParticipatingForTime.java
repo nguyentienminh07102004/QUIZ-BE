@@ -1,4 +1,6 @@
-package com.ptitB22CN539.QuizRemake.DTO.Request.TestResult;
+package com.ptitB22CN539.QuizRemake.DTO.Response.Chart;
+
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TestResultStart {
-    private String testId;
-    private Date startedDate;
+public class NumberOfPlayerParticipatingForTime {
+    private Date date;
+    private Long numberOfPlayers;
 }

@@ -3,6 +3,8 @@ package com.ptitB22CN539.QuizRemake.Controller;
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
+import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
+import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
 import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestResultMapper;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +71,28 @@ public class TestResultController {
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .data(countAllTestResult)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/number-of-player-participating-test")
+    public ResponseEntity<APIResponse> numberOfPlayerParticipatingTest(@RequestParam(required = false, defaultValue = "10") Long limit) {
+        List<NumberOfPlayerParticipatingTestResponse> responses = testResultService.numberOfPlayerParticipatingTest(limit);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/number-of-player-participating-test-for-time")
+    public ResponseEntity<APIResponse> numberOfPlayerParticipatingForTime() {
+        List<NumberOfPlayerParticipatingForTime> responses = testResultService.numberOfPlayerParticipatingForTime();
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(responses)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

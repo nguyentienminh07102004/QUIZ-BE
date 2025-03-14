@@ -77,6 +77,8 @@ public class WebSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/%s/test-result/finish".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/%s/test-result/{id}".formatted(API_PREFIX)).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/%s/test-result/count".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/test-result/number-of-player-participating-test".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/%s/test-result/number-of-player-participating-test-for-time".formatted(API_PREFIX)).permitAll()
 
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
