@@ -31,4 +31,9 @@ public class RoleEntity {
     @OneToMany(mappedBy = "role", targetEntity = UserEntity.class)
     @JsonIgnore
     private List<UserEntity> users;
+
+    public RoleEntity(String name, String code) {
+        this.name = name;
+        this.code = code;
+    }
 }

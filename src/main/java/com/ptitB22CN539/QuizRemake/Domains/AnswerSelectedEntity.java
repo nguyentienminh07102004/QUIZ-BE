@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "answer_selecteds")
+@Table(name = "answerSelecteds")
 @Getter
 @Setter
 public class AnswerSelectedEntity {
@@ -24,13 +24,13 @@ public class AnswerSelectedEntity {
     @Column(name = "id")
     private String id;
     @ManyToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "questionId")
     private QuestionEntity question;
     @ManyToOne
-    @JoinColumn(name = "answer_id")
+    @JoinColumn(name = "answerId")
     private AnswerEntity answer;
     @ManyToOne
-    @JoinColumn(name = "test_result_id")
+    @JoinColumn(name = "test_resultId")
     private TestResultEntity testResult;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)

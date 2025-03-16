@@ -6,7 +6,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
-import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
+import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface IUserService {
     UserEntity save(UserRegisterRequest userRegisterRequest);
-    JwtEntity login(UserLoginRequest loginRequest);
+    JwtResponse login(UserLoginRequest loginRequest);
     void changeStatus(List<String> ids);
     UserEntity getUserById(String id);
     UserEntity getUserByEmail(String email);
@@ -23,7 +23,7 @@ public interface IUserService {
     void changePassword(UserChangePasswordRequest userChangePassword);
     Page<UserEntity> getAllUsers(UserSearchRequest userSearchRequest);
     UserEntity getMyInfo();
-    JwtEntity loginSocial(UserSocialLogin userSocialLogin);
+    JwtResponse loginSocial(UserSocialLogin userSocialLogin);
     Long countALlUsers();
     UserEntity uploadAvatar(UserUploadAvatarRequest avatarRequest);
 }

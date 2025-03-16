@@ -26,11 +26,11 @@ public class AnswerEntity {
     private String id;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    @Column(name = "is_correct")
+    @Column(name = "isCorrect")
     private Boolean isCorrect;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
+    @JoinColumn(name = "questionId", referencedColumnName = "id")
     private QuestionEntity question;
 
     @OneToMany(mappedBy = "answer")

@@ -30,7 +30,7 @@ public class QuestionEntity {
     private String id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "short_description", columnDefinition = "TEXT")
+    @Column(name = "shortDescription", columnDefinition = "TEXT")
     private String shortDescription;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
@@ -47,6 +47,6 @@ public class QuestionEntity {
     private List<AnswerSelectedEntity> answerSelecteds;
 
     @ManyToOne
-    @JoinColumn(name = "category_code", referencedColumnName = "code")
+    @JoinColumn(name = "categoryCode", referencedColumnName = "code")
     private CategoryEntity category;
 }

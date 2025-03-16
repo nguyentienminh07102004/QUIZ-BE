@@ -29,7 +29,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private String id;
-    @Column(name = "full_name")
+    @Column(name = "fullName")
     private String fullName;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -41,11 +41,8 @@ public class UserEntity {
     @Enumerated(value = EnumType.STRING)
     private UserStatus status;
 
-    @OneToMany(mappedBy = "user")
-    private List<JwtEntity> jwts;
-
     @ManyToOne
-    @JoinColumn(name = "role_name")
+    @JoinColumn(name = "roleCode")
     private RoleEntity role;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)

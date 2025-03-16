@@ -10,6 +10,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
 import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
@@ -28,7 +29,7 @@ public class JwtGenerator {
     @Value(value = "${accessTokenDuration}")
     private Long accessTokenDuration;
 
-    public JwtEntity generateJwtEntity(UserEntity user) {
+    public JwtDTO generateJwtEntity(UserEntity user) {
         try {
             JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
             String jti = UUID.randomUUID().toString();
@@ -43,7 +44,7 @@ public class JwtGenerator {
             Payload payload = new Payload(claimsSet.toJSONObject());
             JWSObject jwsObject = new JWSObject(header, payload);
             jwsObject.sign(new MACSigner(signerKey.getBytes()));
-            return new JwtEntity(jti, jwsObject.serialize(), exp, user);
+            return new JwtDTO(jti, jwsObject.serialize(), exp);
         } catch (Exception exception) {
             throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
         }

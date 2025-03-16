@@ -3,12 +3,14 @@ package com.ptitB22CN539.QuizRemake.Service.User;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.ptitB22CN539.QuizRemake.BeanApp.ConstantConfig;
 import com.ptitB22CN539.QuizRemake.BeanApp.UserStatus;
+import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
 import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity_;
@@ -60,12 +62,12 @@ public class UserServiceImpl implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final IJwtRepository jwtRepository;
 
-    @Value(value = "${maxLoginDevice}")
-    private Integer maxLoginDevice;
     @Value(value = "${google.clientId}")
     private String clientId;
     @Value(value = "${google.clientSecret}")
     private String clientSecret;
+    @Value(value = "${maxLoginDevice}")
+    private Long maxLoginDevice;
 
     @Override
     @Transactional
@@ -84,37 +86,24 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional
-    public JwtEntity login(UserLoginRequest userLogin) {
-        try {
-            UserEntity user = this.getUserByEmail(userLogin.getEmail());
-            if ((userLogin.getIsSocial() == null || !userLogin.getIsSocial())
-                    && !passwordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
-                throw new DataInvalidException(ExceptionVariable.EMAIL_PASSWORD_NOT_CORRECT);
-            }
-            List<JwtEntity> jwtEntities = jwtRepository.findByUser_Email(user.getEmail());
-            if (jwtEntities.size() >= maxLoginDevice) {
-                String jit = null;
-                for (JwtEntity jwtEntity : jwtEntities) {
-                    JWTClaimsSet jwtClaimsSet = jwtGenerator.getSignedJWT(jwtEntity.getToken()).getJWTClaimsSet();
-                    if (jwtClaimsSet.getExpirationTime().before(new Date(System.currentTimeMillis()))) {
-                        jit = jwtClaimsSet.getJWTID();
-                        break;
-                    }
-                }
-                if (jit != null) {
-                    // nếu có 1 token hết hạn
-                    jwtRepository.deleteById(jit);
-                } else {
-                    throw new DataInvalidException(ExceptionVariable.ACCOUNT_LOGIN_MAX_DEVICE);
-                }
-            }
-            JwtEntity jwt = jwtGenerator.generateJwtEntity(user);
-            user.getListJwts().add(jwt);
-            userRepository.save(user);
-            return jwt;
-        } catch (ParseException exception) {
-            return null;
+    public JwtResponse login(UserLoginRequest userLogin) {
+        UserEntity user = this.getUserByEmail(userLogin.getEmail());
+        if ((userLogin.getIsSocial() == null || !userLogin.getIsSocial())
+                && !passwordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
+            throw new DataInvalidException(ExceptionVariable.EMAIL_PASSWORD_NOT_CORRECT);
         }
+        user.getListJwts().removeIf(jwtEntity -> jwtEntity.getExpires().before(new Date(System.currentTimeMillis())));
+        if (user.getListJwts().size() >= maxLoginDevice) {
+            throw new DataInvalidException(ExceptionVariable.ACCOUNT_LOGIN_MAX_DEVICE);
+        }
+        JwtDTO jwt = jwtGenerator.generateJwtEntity(user);
+        user.getListJwts().add(new JwtEntity(jwt.getId(), jwt.getExpires(), user));
+        userRepository.save(user);
+        return JwtResponse.builder()
+                .expires(jwt.getExpires())
+                .token(jwt.getToken())
+                .id(jwt.getId())
+                .build();
     }
 
     @Override
@@ -196,7 +185,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional
     @SuppressWarnings(value = "rawtypes")
-    public JwtEntity loginSocial(UserSocialLogin userSocialLogin) {
+    public JwtResponse loginSocial(UserSocialLogin userSocialLogin) {
         WebClient webClient = WebClient.create();
         MultiValueMap<String, String> values = new LinkedMultiValueMap<>();
         values.add(OAuth2ParameterNames.CLIENT_ID, clientId);
@@ -237,8 +226,15 @@ public class UserServiceImpl implements IUserService {
         String avatar = Objects.requireNonNull(userInfo).get("picture").toString();
         UserEntity user = userMapper.registerToEntity(new UserRegisterRequest(fullName, email, ConstantConfig.DEFAULT_PASSWORD, ConstantConfig.DEFAULT_PASSWORD, null, UserStatus.ACTIVE));
         user.setAvatar(avatar);
+        JwtDTO jwt = jwtGenerator.generateJwtEntity(user);
+        JwtEntity jwtEntity = new JwtEntity(jwt.getId(), jwt.getExpires(), user);
+        user.setListJwts(List.of(jwtEntity));
         userRepository.save(user);
-        return jwtGenerator.generateJwtEntity(user);
+        return JwtResponse.builder()
+                .expires(jwt.getExpires())
+                .token(jwt.getToken())
+                .id(jwt.getId())
+                .build();
     }
 
     @Override

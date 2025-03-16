@@ -11,7 +11,6 @@ import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.UserResponse;
 import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
-import com.ptitB22CN539.QuizRemake.Mapper.JwtMapper;
 import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
 import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +37,6 @@ import java.util.List;
 public class UserController {
     private final IUserService userService;
     private final UserMapper userMapper;
-    private final JwtMapper jwtMapper;
 
     @PostMapping(value = "/register")
     public ResponseEntity<APIResponse> registerUser(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
@@ -54,24 +52,22 @@ public class UserController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<APIResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
-        JwtEntity jwt = userService.login(userLoginRequest);
-        JwtResponse jwtResponse = jwtMapper.entityToResponse(jwt);
+        JwtResponse jwt = userService.login(userLoginRequest);
         APIResponse response = APIResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("SUCCESS")
-                .data(jwtResponse)
+                .data(jwt)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping(value = "/login/google")
     public ResponseEntity<APIResponse> loginGoogle(@Valid @RequestBody UserSocialLogin userSocialLogin) {
-        JwtEntity jwt = userService.loginSocial(userSocialLogin);
-        JwtResponse jwtResponse = jwtMapper.entityToResponse(jwt);
+        JwtResponse jwt = userService.loginSocial(userSocialLogin);
         APIResponse response = APIResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("SUCCESS")
-                .data(jwtResponse)
+                .data(jwt)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

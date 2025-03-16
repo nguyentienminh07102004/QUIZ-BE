@@ -16,7 +16,7 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-@Table(name = "jwt_token")
+@Table(name = "jwtToken")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,12 +26,10 @@ public class JwtEntity {
     @Id
     @Column(name = "id")
     private String id;
-    @Column(name = "token", columnDefinition = "TEXT")
-    private String token;
     @Column(name = "expires")
     private Date expires;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_email", referencedColumnName = "email")
+    @JoinColumn(name = "userEmail", referencedColumnName = "email")
     private UserEntity user;
 }

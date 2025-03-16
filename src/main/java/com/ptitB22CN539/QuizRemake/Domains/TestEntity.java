@@ -39,9 +39,9 @@ public class TestEntity {
     private Difficulty difficulty;
 
     @ManyToMany
-    @JoinTable(name = "question_test",
-            joinColumns = @JoinColumn(name = "test_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
+    @JoinTable(name = "questionTest",
+            joinColumns = @JoinColumn(name = "testId"),
+            inverseJoinColumns = @JoinColumn(name = "questionId"))
     private List<QuestionEntity> questions;
 
     @OneToMany(mappedBy = "test", orphanRemoval = true)

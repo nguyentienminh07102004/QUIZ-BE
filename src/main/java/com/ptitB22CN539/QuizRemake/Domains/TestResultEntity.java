@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "test_results")
+@Table(name = "testResults")
 @Getter
 @Setter
 public class TestResultEntity {
@@ -34,12 +34,12 @@ public class TestResultEntity {
     private TestEntity test;
     @Column(name = "score")
     private Integer score;
-    @Column(name = "started_date")
+    @Column(name = "startedDate")
     private Date startedDate;
-    @Column(name = "finish_date")
+    @Column(name = "finishDate")
     private Date finishDate;
     @ManyToOne
-    @JoinColumn(name = "user_email", referencedColumnName = "email")
+    @JoinColumn(name = "userEmail", referencedColumnName = "email")
     private UserEntity user;
     @OneToMany(mappedBy = "testResult", orphanRemoval = true)
     @Cascade(value = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
