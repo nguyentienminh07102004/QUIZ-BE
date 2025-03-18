@@ -21,4 +21,5 @@ public class TestResponse {
     private Difficulty difficulty;
     private CategoryResponse category;
     private List<QuestionResponse> questions;
+    private TestRatingResponse testRating;
 }

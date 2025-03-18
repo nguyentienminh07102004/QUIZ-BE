@@ -3,6 +3,7 @@ package com.ptitB22CN539.QuizRemake.Controller;
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
@@ -17,9 +18,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,6 +76,41 @@ public class TestController {
                 .code(HttpStatus.OK.value())
                 .message("SUCCESS")
                 .data(countAllQuestions)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/same-category")
+    public ResponseEntity<APIResponse> findAllTestByCategory(@RequestParam String categoryCode) {
+        List<TestEntity> listTest = testService.findAllTestsHasSameCategory(categoryCode);
+        List<TestResponse> testResponses = listTest.stream()
+                .map(testMapper::entityToResponse)
+                .toList();
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
+                .data(testResponses)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/rating/user/{testId}")
+    public ResponseEntity<APIResponse> findTestRatingByTestIdAndUser(@PathVariable String testId) {
+        TestRatingResponse testRatingResponse = testService.findTestRatingByTestIdAndUser(testId);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(200)
+                .data(testRatingResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping(value = "/rate/{testId}/{rate}")
+    public ResponseEntity<APIResponse> ratingTest(@PathVariable String testId, @PathVariable Double rate) {
+        testService.ratingTest(testId, rate);
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

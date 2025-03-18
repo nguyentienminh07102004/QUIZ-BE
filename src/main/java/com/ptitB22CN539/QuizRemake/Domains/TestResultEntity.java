@@ -30,7 +30,7 @@ public class TestResultEntity {
     @Column(name = "id")
     private String id;
     @ManyToOne
-    @JoinColumn(name = "test_id")
+    @JoinColumn(name = "testId")
     private TestEntity test;
     @Column(name = "score")
     private Integer score;
@@ -43,7 +43,7 @@ public class TestResultEntity {
     private UserEntity user;
     @OneToMany(mappedBy = "testResult", orphanRemoval = true)
     @Cascade(value = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    private List<AnswerSelectedEntity> answerSelecteds;
+    private List<QuestionResultEntity> answerSelecteds;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private TestResultStatus status;

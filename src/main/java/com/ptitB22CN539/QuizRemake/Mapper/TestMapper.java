@@ -2,15 +2,18 @@ package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +40,22 @@ public class TestMapper {
 
     public TestResponse entityToResponse(TestEntity testEntity) {
         TestResponse testResponse = modelMapper.map(testEntity, TestResponse.class);
-        List< QuestionResponse> listQuestion = testEntity.getQuestions().stream()
+        List<QuestionResponse> listQuestion = testEntity.getQuestions().stream()
                 .map(questionMapper::entityToResponse)
                 .toList();
         testResponse.setCategory(categoryMapper.entityToResponse(testEntity.getCategory()));
         testResponse.setQuestions(listQuestion);
+        // set test rating
+        if (testEntity.getTestRatings() != null && !testEntity.getTestRatings().isEmpty()) {
+            Double totalRating = testEntity.getTestRatings().stream()
+                    .map(TestRatingEntity::getRating)
+                    .reduce(0.0D, Double::sum) / testEntity.getTestRatings().size();
+            TestRatingResponse testRatingResponse = new TestRatingResponse();
+            DecimalFormat format = new DecimalFormat("#.##");
+            testRatingResponse.setRating(Double.valueOf(format.format(totalRating)));
+            testRatingResponse.setNumberOfRatings(testEntity.getTestRatings().size());
+            testResponse.setTestRating(testRatingResponse);
+        }
         return testResponse;
     }
 }

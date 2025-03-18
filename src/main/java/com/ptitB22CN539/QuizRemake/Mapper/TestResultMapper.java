@@ -2,10 +2,11 @@ package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Response.AnswerSelectedResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
-import com.ptitB22CN539.QuizRemake.Domains.AnswerSelectedEntity;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Domains.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Domains.AnswerQuestionResultEntity;
+import com.ptitB22CN539.QuizRemake.Domains.QuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
-import com.ptitB22CN539.QuizRemake.Repository.IAnswerSelectedRepository;
+import com.ptitB22CN539.QuizRemake.Repository.IQuestionResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -19,23 +20,19 @@ public class TestResultMapper {
     private final ModelMapper modelMapper;
     private final TestMapper testMapper;
     private final UserMapper userMapper;
-    private final IAnswerSelectedRepository answerSelectedRepository;
+    private final IQuestionResultRepository questionResultRepository;
 
     public TestResultResponse entityToResponse(TestResultEntity testResultEntity) {
         TestResultResponse testResultResponse = modelMapper.map(testResultEntity, TestResultResponse.class);
         testResultResponse.setUser(userMapper.entityToResponse(testResultEntity.getUser()));
         testResultResponse.setTest(testMapper.entityToResponse(testResultEntity.getTest()));
-        List<QuestionEntity> listQuestion = testResultEntity.getTest().getQuestions();
+        List<QuestionResultEntity> questionResults = questionResultRepository.findAllByTestResult_Id(testResultEntity.getId());
         List<AnswerSelectedResponse> listAnswerSelectedResponse = new ArrayList<>();
-        for (QuestionEntity question : listQuestion) {
+        for (QuestionResultEntity questionResult : questionResults) {
             AnswerSelectedResponse answerSelectedResponse = new AnswerSelectedResponse();
-            List<AnswerSelectedEntity> answerSelectedEntities = answerSelectedRepository.findAllByTestResult_IdAndQuestion_Id(testResultEntity.getId(), question.getId());
-            if (!answerSelectedEntities.isEmpty()) {
-                answerSelectedResponse.setStatus(answerSelectedEntities.get(0).getStatus());
-                answerSelectedResponse.setQuestionId(question.getId());
-                answerSelectedResponse.setAnswerIds(answerSelectedEntities.stream().map(AnswerSelectedEntity::getId).toList());
-                listAnswerSelectedResponse.add(answerSelectedResponse);
-            }
+            answerSelectedResponse.setStatus(questionResult.getStatus());
+            answerSelectedResponse.setQuestionId(questionResult.getQuestion().getId());
+            answerSelectedResponse.setAnswerIds(questionResult.getAnswers().stream().map(AnswerQuestionResultEntity::getAnswer).map(AnswerEntity::getId).toList());
         }
         testResultResponse.setAnswerSelected(listAnswerSelectedResponse);
         return testResultResponse;

@@ -1,8 +1,10 @@
 package com.ptitB22CN539.QuizRemake.Domains;
 
+import com.ptitB22CN539.QuizRemake.BeanApp.AnswerSelectedStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,23 +18,24 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "answers")
+@Table(name = "questionResults")
 @Getter
 @Setter
-public class AnswerEntity {
+public class QuestionResultEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private String id;
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
-    @Column(name = "isCorrect")
-    private Boolean isCorrect;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "questionId", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "questionId")
     private QuestionEntity question;
+    @ManyToOne
+    @JoinColumn(name = "test_resultId")
+    private TestResultEntity testResult;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private AnswerSelectedStatus status;
 
-    @OneToMany(mappedBy = "answer")
-    private List<AnswerQuestionResultEntity> answerQuestionResults;
+    @OneToMany(mappedBy = "questionResult")
+    private List<AnswerQuestionResultEntity> answers;
 }

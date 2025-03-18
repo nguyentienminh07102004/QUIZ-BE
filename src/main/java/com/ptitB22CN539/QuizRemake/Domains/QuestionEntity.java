@@ -44,7 +44,7 @@ public class QuestionEntity {
     private List<TestEntity> tests;
 
     @OneToMany(mappedBy = "question")
-    private List<AnswerSelectedEntity> answerSelecteds;
+    private List<QuestionResultEntity> answerSelecteds;
 
     @ManyToOne
     @JoinColumn(name = "categoryCode", referencedColumnName = "code")

@@ -38,6 +38,9 @@ public class TestEntity {
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
+    @OneToMany(mappedBy = "test")
+    private List<TestRatingEntity> testRatings;
+
     @ManyToMany
     @JoinTable(name = "questionTest",
             joinColumns = @JoinColumn(name = "testId"),

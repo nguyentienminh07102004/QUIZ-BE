@@ -54,4 +54,7 @@ public class UserEntity {
     @Cascade(value = {CascadeType.REMOVE})
     @JsonIgnore
     private List<TestResultEntity> testResults;
+
+    @OneToMany(mappedBy = "user")
+    private List<TestRatingEntity> testRatings;
 }

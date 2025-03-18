@@ -8,7 +8,8 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
 import com.ptitB22CN539.QuizRemake.Domains.AnswerEntity;
-import com.ptitB22CN539.QuizRemake.Domains.AnswerSelectedEntity;
+import com.ptitB22CN539.QuizRemake.Domains.AnswerQuestionResultEntity;
+import com.ptitB22CN539.QuizRemake.Domains.QuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
@@ -59,7 +60,7 @@ public class TestResultServiceImpl implements ITestResultService {
         TestEntity test = testResultEntity.getTest();
         List<QuestionEntity> listQuestion = test.getQuestions();
         List<AnswerSelectedRequest> listAnswerSelected = testResultFinish.getAnswerSelecteds();
-        List<AnswerSelectedEntity> listAnswerSelectedEntity = new ArrayList<>();
+        List<QuestionResultEntity> listQuestionResult = new ArrayList<>();
         int score = 0;
         for (QuestionEntity questionEntity : listQuestion) {
             List<String> answerSelectedRequest = listAnswerSelected.stream()
@@ -67,37 +68,35 @@ public class TestResultServiceImpl implements ITestResultService {
                     .findFirst()
                     .map(AnswerSelectedRequest::getAnswerIds)
                     .orElse(null);
-            if (answerSelectedRequest != null) {
+            QuestionResultEntity questionResult = new QuestionResultEntity();
+            questionResult.setQuestion(questionEntity);
+            questionResult.setTestResult(testResultEntity);
+            List<AnswerQuestionResultEntity> listAnswerQuestionResult = new ArrayList<>();
+            if (answerSelectedRequest == null || answerSelectedRequest.isEmpty()) {
+                questionResult.setAnswers(listAnswerQuestionResult);
+                questionResult.setStatus(AnswerSelectedStatus.NOT_ANSWERED);
+            } else {
                 boolean isSuccess = true;
-                List<AnswerSelectedEntity> listAnswerForQuestionCurrent = new ArrayList<>();
+                List<AnswerQuestionResultEntity> listAnswerForQuestionCurrent = new ArrayList<>();
                 for (String answerId : answerSelectedRequest) {
                     AnswerEntity answer = answerRepository.findById(answerId)
                             .orElseThrow(() -> new DataInvalidException(ExceptionVariable.ANSWER_NOT_FOUND));
                     if (!answer.getIsCorrect()) isSuccess = false;
-                    AnswerSelectedEntity answerSelectedEntity = new AnswerSelectedEntity();
-                    answerSelectedEntity.setTestResult(testResultEntity);
-                    answerSelectedEntity.setQuestion(questionEntity);
-                    answerSelectedEntity.setAnswer(answer);
-                    listAnswerForQuestionCurrent.add(answerSelectedEntity);
+                    listAnswerForQuestionCurrent.add(new AnswerQuestionResultEntity(answer, questionResult));
                 }
+                questionResult.setAnswers(listAnswerForQuestionCurrent);
                 if (isSuccess) {
                     score++;
-                    listAnswerForQuestionCurrent.forEach(answer -> answer.setStatus(AnswerSelectedStatus.CORRECT));
+                    questionResult.setStatus(AnswerSelectedStatus.CORRECT);
                 } else {
-                    listAnswerForQuestionCurrent.forEach(answer -> answer.setStatus(AnswerSelectedStatus.INCORRECT));
+                    questionResult.setStatus(AnswerSelectedStatus.INCORRECT);
                 }
-                listAnswerSelectedEntity.addAll(listAnswerForQuestionCurrent);
-            } else {
-                AnswerSelectedEntity answerSelectedEntity = new AnswerSelectedEntity();
-                answerSelectedEntity.setTestResult(testResultEntity);
-                answerSelectedEntity.setQuestion(questionEntity);
-                answerSelectedEntity.setStatus(AnswerSelectedStatus.NOT_ANSWERED);
-                listAnswerSelectedEntity.add(answerSelectedEntity);
             }
+            listQuestionResult.add(questionResult);
         }
         testResultEntity.setScore(score);
         testResultEntity.setFinishDate(testResultFinish.getFinishDate());
-        testResultEntity.getAnswerSelecteds().addAll(listAnswerSelectedEntity);
+        testResultEntity.getAnswerSelecteds().addAll(listQuestionResult);
         testResultEntity.setStatus(TestResultStatus.COMPLETE);
         return testResultRepository.save(testResultEntity);
     }

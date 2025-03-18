@@ -44,7 +44,7 @@ public class UserMapper {
         RoleResponse roleResponse = roleMapper.entityToResponse(userEntity.getRole());
         userResponse.setRole(roleResponse);
         if (userEntity.getAvatar() != null && !userEntity.getAvatar().contains("https")) {
-            userResponse.setAvatar("https://lh3.google.com/u/0/d/%s".formatted(userEntity.getAvatar()));
+            userResponse.setAvatar("https://drive.google.com/thumbnail?id=%s".formatted(userEntity.getAvatar()));
         }
         return userResponse;
     }

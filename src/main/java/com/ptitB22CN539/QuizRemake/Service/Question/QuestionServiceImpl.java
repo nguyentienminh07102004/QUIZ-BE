@@ -46,6 +46,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<QuestionEntity> findAll(QuestionSearchRequest searchRequest) {
         Specification<QuestionEntity> specification = (root, query, builder) -> {
             Predicate predicate = builder.conjunction();

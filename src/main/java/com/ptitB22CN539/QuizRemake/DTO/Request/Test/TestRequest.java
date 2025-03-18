@@ -2,6 +2,7 @@ package com.ptitB22CN539.QuizRemake.DTO.Request.Test;
 
 import com.ptitB22CN539.QuizRemake.BeanApp.Difficulty;
 import com.ptitB22CN539.QuizRemake.Validator.QuestionExistsValid;
+import com.ptitB22CN539.QuizRemake.Validator.QuestionHasSameCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -29,5 +30,6 @@ public class TestRequest {
     @NotNull(message = "TEST_MUST_HAS_LEAST_QUESTION")
     @NotEmpty(message = "TEST_MUST_HAS_LEAST_QUESTION")
     @QuestionExistsValid
+    @QuestionHasSameCategory
     private List<String> questionIds;
 }

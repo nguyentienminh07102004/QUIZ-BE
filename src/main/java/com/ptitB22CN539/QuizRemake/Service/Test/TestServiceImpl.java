@@ -2,22 +2,29 @@ package com.ptitB22CN539.QuizRemake.Service.Test;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
+import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity;
+import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
+import com.ptitB22CN539.QuizRemake.Repository.ITestRatingRepository;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRepository;
+import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +33,8 @@ import java.util.List;
 public class TestServiceImpl implements ITestService {
     private final ITestRepository testRepository;
     private final TestMapper testMapper;
+    private final ITestRatingRepository testRatingRepository;
+    private final IUserService userService;
 
     @Override
     @Transactional
@@ -35,6 +44,7 @@ public class TestServiceImpl implements ITestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TestEntity> findAll(TestSearchRequest testSearchRequest) {
         Specification<TestEntity> specification = (root, query, builder) -> {
             List<Predicate> predicates= new ArrayList<>();
@@ -74,5 +84,35 @@ public class TestServiceImpl implements ITestService {
     @Transactional(readOnly = true)
     public Long countAllTest() {
         return testRepository.count();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TestEntity> findAllTestsHasSameCategory(String category) {
+        return testRepository.findAllTestByCategory_Code(category, PaginationUtils.getPageable(1, 10));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TestRatingResponse findTestRatingByTestIdAndUser(String testId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<TestRatingEntity> testRatingList = testRatingRepository.findByUser_EmailAndTest_Id(email, testId);
+        TestRatingResponse testRatingResponse = new TestRatingResponse();
+        testRatingResponse.setNumberOfRatings(testRatingList.size());
+        Double rating = testRatingList.stream().map(TestRatingEntity::getRating).reduce(0.0, Double::sum) / testRatingList.size();
+        DecimalFormat format = new DecimalFormat("#.##");
+        testRatingResponse.setRating(Double.valueOf(format.format(rating)));
+        return testRatingResponse;
+    }
+
+    @Override
+    @Transactional
+    public void ratingTest(String testId, Double rate) {
+        TestRatingEntity testRatingEntity = new TestRatingEntity();
+        testRatingEntity.setRating(rate);
+        UserEntity user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        testRatingEntity.setUser(user);
+        testRatingEntity.setTest(this.findById(testId));
+        testRatingRepository.save(testRatingEntity);
     }
 }

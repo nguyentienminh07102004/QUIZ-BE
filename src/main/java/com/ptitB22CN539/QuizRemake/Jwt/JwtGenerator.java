@@ -11,7 +11,6 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
-import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
