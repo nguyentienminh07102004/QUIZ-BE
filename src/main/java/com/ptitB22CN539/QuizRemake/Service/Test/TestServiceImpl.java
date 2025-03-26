@@ -7,6 +7,7 @@ import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
 import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity;
+import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity_;
 import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
 import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
@@ -18,6 +19,7 @@ import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,6 @@ public class TestServiceImpl implements ITestService {
             }
             if (query != null) {
                 query.distinct(true);
-//                query.groupBy(root.get(TestEntity_.ID));
             }
             return builder.and(predicates.toArray(new Predicate[0]));
         };
@@ -94,14 +95,18 @@ public class TestServiceImpl implements ITestService {
 
     @Override
     @Transactional(readOnly = true)
-    public TestRatingResponse findTestRatingByTestIdAndUser(String testId) {
+    public TestRatingResponse findLastTestRatingByTestIdAndUser(String testId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<TestRatingEntity> testRatingList = testRatingRepository.findByUser_EmailAndTest_Id(email, testId);
+        TestRatingEntity testRating = testRatingRepository.findTop1ByUser_EmailAndTest_Id(email, testId, Sort.by(Sort.Direction.DESC, TestRatingEntity_.CREATED_DATE));
         TestRatingResponse testRatingResponse = new TestRatingResponse();
-        testRatingResponse.setNumberOfRatings(testRatingList.size());
-        Double rating = testRatingList.stream().map(TestRatingEntity::getRating).reduce(0.0, Double::sum) / testRatingList.size();
-        DecimalFormat format = new DecimalFormat("#.##");
-        testRatingResponse.setRating(Double.valueOf(format.format(rating)));
+        if (testRating == null) {
+            testRatingResponse.setRating(0.0);
+            testRatingResponse.setNumberOfRatings(0);
+        } else {
+            testRatingResponse.setNumberOfRatings(testRatingRepository.countByUser_EmailAndTest_Id(email, testId));
+            DecimalFormat format = new DecimalFormat("#.##");
+            testRatingResponse.setRating(Double.valueOf(format.format(testRating.getRating())));
+        }
         return testRatingResponse;
     }
 

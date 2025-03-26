@@ -14,6 +14,6 @@ public interface ITestService {
     TestEntity findById(String id);
     Long countAllTest();
     List<TestEntity> findAllTestsHasSameCategory(String category);
-    TestRatingResponse findTestRatingByTestIdAndUser(String testId);
+    TestRatingResponse findLastTestRatingByTestIdAndUser(String testId);
     void ratingTest(String testId, Double rate);
 }

@@ -14,6 +14,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.List;
 
@@ -30,12 +32,13 @@ public class QuestionResultEntity {
     @JoinColumn(name = "questionId")
     private QuestionEntity question;
     @ManyToOne
-    @JoinColumn(name = "test_resultId")
+    @JoinColumn(name = "testResultId")
     private TestResultEntity testResult;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private AnswerSelectedStatus status;
 
-    @OneToMany(mappedBy = "questionResult")
+    @OneToMany(mappedBy = "questionResult", orphanRemoval = true)
+    @Cascade(value = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     private List<AnswerQuestionResultEntity> answers;
 }

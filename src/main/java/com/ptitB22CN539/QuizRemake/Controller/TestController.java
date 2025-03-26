@@ -96,7 +96,7 @@ public class TestController {
 
     @GetMapping(value = "/rating/user/{testId}")
     public ResponseEntity<APIResponse> findTestRatingByTestIdAndUser(@PathVariable String testId) {
-        TestRatingResponse testRatingResponse = testService.findTestRatingByTestIdAndUser(testId);
+        TestRatingResponse testRatingResponse = testService.findLastTestRatingByTestIdAndUser(testId);
         APIResponse response = APIResponse.builder()
                 .message("SUCCESS")
                 .code(200)

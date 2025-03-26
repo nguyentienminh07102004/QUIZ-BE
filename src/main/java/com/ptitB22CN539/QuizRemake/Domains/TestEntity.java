@@ -52,6 +52,6 @@ public class TestEntity {
     private List<TestResultEntity> testResults;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "category_code", referencedColumnName = "code")
+    @JoinColumn(name = "categoryCode", referencedColumnName = "code")
     private CategoryEntity category;
 }

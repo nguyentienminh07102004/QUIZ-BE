@@ -2,6 +2,7 @@ package com.ptitB22CN539.QuizRemake.Domains;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +13,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Checks;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "testRatings")
@@ -20,6 +25,7 @@ import org.hibernate.annotations.Checks;
 @Checks(value = {
         @Check(name = "rating", constraints = "rating >= 0")
 })
+@EntityListeners(value = AuditingEntityListener.class)
 public class TestRatingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,4 +39,8 @@ public class TestRatingEntity {
     private UserEntity user;
     @Column(name = "rating")
     private Double rating;
+
+    @Column(name = "createdDate", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    private Date createdDate;
 }

@@ -33,6 +33,7 @@ public class TestResultMapper {
             answerSelectedResponse.setStatus(questionResult.getStatus());
             answerSelectedResponse.setQuestionId(questionResult.getQuestion().getId());
             answerSelectedResponse.setAnswerIds(questionResult.getAnswers().stream().map(AnswerQuestionResultEntity::getAnswer).map(AnswerEntity::getId).toList());
+            listAnswerSelectedResponse.add(answerSelectedResponse);
         }
         testResultResponse.setAnswerSelected(listAnswerSelectedResponse);
         return testResultResponse;
