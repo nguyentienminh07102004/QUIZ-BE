@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.Repository;
 
-import com.ptitB22CN539.QuizRemake.Domains.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Entity.AnswerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

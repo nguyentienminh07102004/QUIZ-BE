@@ -1,16 +1,17 @@
 package com.ptitB22CN539.QuizRemake.Service.Test;
 
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
-import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity;
-import com.ptitB22CN539.QuizRemake.Domains.TestRatingEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
-import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity_;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity_;
+import com.ptitB22CN539.QuizRemake.Entity.TestRatingEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestRatingEntity_;
+import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRatingRepository;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRepository;
@@ -65,6 +66,7 @@ public class TestServiceImpl implements ITestService {
                 predicates.add(builder.equal(root.get(TestEntity_.CATEGORY).get(CategoryEntity_.CODE),
                         testSearchRequest.getCategory()));
             }
+            predicates.add(builder.equal(root.get(TestEntity_.STATUS), TestStatus.ACTIVE));
             if (query != null) {
                 query.distinct(true);
             }
@@ -90,7 +92,7 @@ public class TestServiceImpl implements ITestService {
     @Override
     @Transactional(readOnly = true)
     public List<TestEntity> findAllTestsHasSameCategory(String category) {
-        return testRepository.findAllTestByCategory_Code(category, PaginationUtils.getPageable(1, 10));
+        return testRepository.findAllTestByCategory_CodeAndStatus(category, TestStatus.ACTIVE, PaginationUtils.getPageable(1, 10));
     }
 
     @Override
@@ -119,5 +121,17 @@ public class TestServiceImpl implements ITestService {
         testRatingEntity.setUser(user);
         testRatingEntity.setTest(this.findById(testId));
         testRatingRepository.save(testRatingEntity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTest(List<String> ids) {
+        List<TestEntity> entityList = new ArrayList<>();
+        for (String id : ids) {
+            TestEntity testEntity = this.findById(id);
+            testEntity.setStatus(TestStatus.INACTIVE);
+            entityList.add(testEntity);
+        }
+        testRepository.saveAll(entityList);
     }
 }

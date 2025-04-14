@@ -1,13 +1,13 @@
 package com.ptitB22CN539.QuizRemake.Mapper;
 
-import com.ptitB22CN539.QuizRemake.BeanApp.ConstantConfig;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.RoleResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.UserResponse;
-import com.ptitB22CN539.QuizRemake.Domains.RoleEntity;
-import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
-import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Entity.RoleEntity;
+import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;

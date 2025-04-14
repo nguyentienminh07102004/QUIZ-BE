@@ -5,7 +5,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
 import com.ptitB22CN539.QuizRemake.Service.Test.ITestService;
 import jakarta.validation.Valid;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,6 +109,16 @@ public class TestController {
     @PutMapping(value = "/rate/{testId}/{rate}")
     public ResponseEntity<APIResponse> ratingTest(@PathVariable String testId, @PathVariable Double rate) {
         testService.ratingTest(testId, rate);
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping(value = "/{ids}")
+    public ResponseEntity<APIResponse> deleteTest(@PathVariable List<String> ids) {
+        testService.deleteTest(ids);
         APIResponse response = APIResponse.builder()
                 .code(200)
                 .message("SUCCESS")

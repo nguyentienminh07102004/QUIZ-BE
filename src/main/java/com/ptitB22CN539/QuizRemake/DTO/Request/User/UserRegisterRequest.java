@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.DTO.Request.User;
 
-import com.ptitB22CN539.QuizRemake.BeanApp.UserStatus;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

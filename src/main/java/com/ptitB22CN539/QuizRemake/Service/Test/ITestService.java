@@ -3,7 +3,7 @@ package com.ptitB22CN539.QuizRemake.Service.Test;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,4 +16,5 @@ public interface ITestService {
     List<TestEntity> findAllTestsHasSameCategory(String category);
     TestRatingResponse findLastTestRatingByTestIdAndUser(String testId);
     void ratingTest(String testId, Double rate);
+    void deleteTest(List<String> ids);
 }

@@ -1,6 +1,7 @@
 package com.ptitB22CN539.QuizRemake.Repository;
 
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,5 +11,5 @@ import java.util.List;
 
 @Repository
 public interface ITestRepository extends JpaRepository<TestEntity, String>, JpaSpecificationExecutor<TestEntity> {
-    List<TestEntity> findAllTestByCategory_Code(String categoryCode, Pageable pageable);
+    List<TestEntity> findAllTestByCategory_CodeAndStatus(String categoryCode, TestStatus status, Pageable pageable);
 }

@@ -4,7 +4,7 @@ import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.QuestionMapper;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import jakarta.validation.Valid;

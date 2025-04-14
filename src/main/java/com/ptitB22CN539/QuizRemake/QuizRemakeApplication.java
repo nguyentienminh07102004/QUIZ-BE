@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake;
 
-import com.ptitB22CN539.QuizRemake.BeanApp.ConstantConfig;
-import com.ptitB22CN539.QuizRemake.Domains.RoleEntity;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
+import com.ptitB22CN539.QuizRemake.Entity.RoleEntity;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

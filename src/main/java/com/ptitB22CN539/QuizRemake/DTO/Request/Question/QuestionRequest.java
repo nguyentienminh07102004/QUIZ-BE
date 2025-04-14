@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake.DTO.Request.Question;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Answer.AnswerRequest;
-import com.ptitB22CN539.QuizRemake.Validator.QuestionHasLeastCorrectAnswer;
+import com.ptitB22CN539.QuizRemake.Common.Validator.QuestionHasLeastCorrectAnswer;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

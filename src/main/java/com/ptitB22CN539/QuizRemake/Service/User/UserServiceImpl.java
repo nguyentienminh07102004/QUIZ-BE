@@ -1,8 +1,8 @@
 package com.ptitB22CN539.QuizRemake.Service.User;
 
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.ptitB22CN539.QuizRemake.BeanApp.ConstantConfig;
-import com.ptitB22CN539.QuizRemake.BeanApp.UserStatus;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.UserStatus;
 import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
@@ -11,12 +11,12 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
-import com.ptitB22CN539.QuizRemake.Domains.JwtEntity;
-import com.ptitB22CN539.QuizRemake.Domains.UserEntity;
-import com.ptitB22CN539.QuizRemake.Domains.UserEntity_;
-import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
-import com.ptitB22CN539.QuizRemake.Jwt.JwtGenerator;
+import com.ptitB22CN539.QuizRemake.Entity.JwtEntity;
+import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Entity.UserEntity_;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Common.Jwt.JwtGenerator;
 import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
 import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;
 import com.ptitB22CN539.QuizRemake.Repository.IUserRepository;
@@ -33,6 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -95,6 +96,9 @@ public class UserServiceImpl implements IUserService {
         user.getListJwts().removeIf(jwtEntity -> jwtEntity.getExpires().before(new Date(System.currentTimeMillis())));
         if (user.getListJwts().size() >= maxLoginDevice) {
             throw new DataInvalidException(ExceptionVariable.ACCOUNT_LOGIN_MAX_DEVICE);
+        }
+        if (user.getStatus().equals(UserStatus.INACTIVE)) {
+            throw new DataInvalidException(ExceptionVariable.USER_LOCKED);
         }
         JwtDTO jwt = jwtGenerator.generateJwtEntity(user);
         user.getListJwts().add(new JwtEntity(jwt.getId(), jwt.getExpires(), user));
@@ -255,5 +259,10 @@ public class UserServiceImpl implements IUserService {
         String id = FileGoogleDrive.uploadFileGoogleDrive(avatar.getAvatar());
         user.setAvatar(id);
         return userRepository.save(user);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void test() {
+        this.jwtRepository.deleteByExpiresBefore(new Date(System.currentTimeMillis()));
     }
 }

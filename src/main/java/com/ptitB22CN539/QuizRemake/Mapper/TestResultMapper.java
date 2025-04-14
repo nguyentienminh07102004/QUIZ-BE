@@ -2,10 +2,10 @@ package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Response.AnswerSelectedResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
-import com.ptitB22CN539.QuizRemake.Domains.AnswerEntity;
-import com.ptitB22CN539.QuizRemake.Domains.AnswerQuestionResultEntity;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionResultEntity;
-import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
+import com.ptitB22CN539.QuizRemake.Entity.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Entity.AnswerQuestionResultEntity;
+import com.ptitB22CN539.QuizRemake.Entity.QuestionResultEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Repository.IQuestionResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

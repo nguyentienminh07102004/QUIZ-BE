@@ -1,9 +1,9 @@
 package com.ptitB22CN539.QuizRemake.Service.Category;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
-import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity;
-import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.CategoryMapper;
 import com.ptitB22CN539.QuizRemake.Repository.ICategoryRepository;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;

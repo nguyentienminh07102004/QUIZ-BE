@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.DTO.Response;
 
-import com.ptitB22CN539.QuizRemake.BeanApp.AnswerSelectedStatus;
+import com.ptitB22CN539.QuizRemake.Common.BeanApp.AnswerSelectedStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

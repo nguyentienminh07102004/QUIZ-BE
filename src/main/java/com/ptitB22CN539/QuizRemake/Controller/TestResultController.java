@@ -6,7 +6,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
-import com.ptitB22CN539.QuizRemake.Domains.TestResultEntity;
+import com.ptitB22CN539.QuizRemake.Entity.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestResultMapper;
 import com.ptitB22CN539.QuizRemake.Service.TestResult.ITestResultService;
 import jakarta.validation.Valid;

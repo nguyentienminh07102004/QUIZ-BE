@@ -2,12 +2,12 @@ package com.ptitB22CN539.QuizRemake.Service.Question;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionSearchRequest;
-import com.ptitB22CN539.QuizRemake.Domains.CategoryEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity;
-import com.ptitB22CN539.QuizRemake.Domains.QuestionEntity_;
-import com.ptitB22CN539.QuizRemake.Domains.TestEntity_;
-import com.ptitB22CN539.QuizRemake.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity_;
+import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity_;
+import com.ptitB22CN539.QuizRemake.Entity.TestEntity_;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.QuestionMapper;
 import com.ptitB22CN539.QuizRemake.Repository.IQuestionRepository;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
