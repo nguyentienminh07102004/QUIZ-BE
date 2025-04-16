@@ -1,13 +1,17 @@
 package com.ptitB22CN539.QuizRemake.Controller;
 
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.AnswerSelectedRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
-import com.ptitB22CN539.QuizRemake.Entity.TestResultEntity;
+import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
 import com.ptitB22CN539.QuizRemake.Mapper.TestResultMapper;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Service.TestResult.ITestResultService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +29,36 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/${api}/test-result")
+@RequestMapping(value = "/test-result")
 public class TestResultController {
     private final ITestResultService testResultService;
     private final TestResultMapper testResultMapper;
+    private final TestMapper testMapper;
 
     @PostMapping(value = "/start")
     public ResponseEntity<APIResponse> startTest(@Valid @RequestBody TestResultStart testResultStart) {
-        TestResultEntity entity = testResultService.startTestResult(testResultStart);
+        String testResultId = this.testResultService.startTestResult(testResultStart);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.CREATED.value())
+                .data(testResultId)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping(value = "/save-answer-test-result")
+    public ResponseEntity<APIResponse> saveAnswerOfTestResult(@Valid @RequestBody AnswerSelectedRequest answerSelectedRequest) {
+        this.testResultService.saveAnswerOfTestResult(answerSelectedRequest.getTestResultId(), answerSelectedRequest.getQuestionId(), answerSelectedRequest.getAnswerId());
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping(value = "/finish")
+    public ResponseEntity<APIResponse> finishTest(@Valid @RequestBody TestResultFinish testResultFinish) {
+        TestResultEntity entity = this.testResultService.finishTest(testResultFinish);
         APIResponse response = APIResponse.builder()
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
@@ -41,13 +67,14 @@ public class TestResultController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping(value = "/finish")
-    public ResponseEntity<APIResponse> finishTest(@Valid @RequestBody TestResultFinish testResultFinish) {
-        TestResultEntity entity = testResultService.finishTest(testResultFinish);
+    @GetMapping(value = "/test/{testResultId}")
+    public ResponseEntity<APIResponse> findAnswerOfTestResult(@PathVariable String testResultId) {
+        TestEntity test = this.testResultService.findTestByTestResultId(testResultId);
+        TestResponse testResponse = this.testMapper.entityToResponse(test);
         APIResponse response = APIResponse.builder()
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
-                .data(testResultMapper.entityToResponse(entity))
+                .data(testResponse)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -71,6 +98,17 @@ public class TestResultController {
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .data(countAllTestResult)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/{testResultId}/question/{questionId}")
+    public ResponseEntity<APIResponse> findAnswerSelectedIdsOfTestResult(@PathVariable String testResultId, @PathVariable String questionId) {
+        List<String> answerIds = this.testResultService.findAnswerSelectedIdsOfTestResult(testResultId, questionId);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .data(answerIds)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

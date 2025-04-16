@@ -7,7 +7,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 

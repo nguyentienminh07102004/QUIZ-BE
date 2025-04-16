@@ -40,8 +40,6 @@ public class FileGoogleDrive {
             File file = service.files().create(fileMetadata, mediaContent)
                     .setFields("id, webContentLink, webViewLink, thumbnailLink")
                     .execute();
-            System.out.println(file.getWebViewLink());
-            System.out.println(file.getThumbnailLink());
             return file.getId();
         } catch (IOException e) {
             throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);

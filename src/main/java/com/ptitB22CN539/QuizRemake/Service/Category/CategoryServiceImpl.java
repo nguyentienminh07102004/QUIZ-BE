@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake.Service.Category;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
-import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.CategoryMapper;

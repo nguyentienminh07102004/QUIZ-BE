@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
-import com.ptitB22CN539.QuizRemake.Entity.RoleEntity;
+import com.ptitB22CN539.QuizRemake.Common.Bean.ConstantConfiguration;
+import com.ptitB22CN539.QuizRemake.Model.Entity.RoleEntity;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -29,11 +29,11 @@ public class QuizRemakeApplication {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-            if (!roleService.existsByCode(ConstantConfig.ROLE_ADMIN)) {
-                roleService.save(new RoleEntity("Quản trị viên", ConstantConfig.ROLE_ADMIN));
+            if (!roleService.existsByCode(ConstantConfiguration.ROLE_ADMIN)) {
+                roleService.save(new RoleEntity("Quản trị viên", ConstantConfiguration.ROLE_ADMIN));
             }
-            if (!roleService.existsByCode(ConstantConfig.ROLE_USER)) {
-                roleService.save(new RoleEntity("Nguời dùng", ConstantConfig.ROLE_USER));
+            if (!roleService.existsByCode(ConstantConfiguration.ROLE_USER)) {
+                roleService.save(new RoleEntity("Nguời dùng", ConstantConfiguration.ROLE_USER));
             }
         };
     }

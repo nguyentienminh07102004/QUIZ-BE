@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.Repository;
 
-import com.ptitB22CN539.QuizRemake.Entity.TestResultEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

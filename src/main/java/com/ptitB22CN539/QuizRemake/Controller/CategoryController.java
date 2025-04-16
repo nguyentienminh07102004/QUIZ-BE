@@ -3,7 +3,7 @@ package com.ptitB22CN539.QuizRemake.Controller;
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.CategoryResponse;
-import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.CategoryMapper;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/${api}/categories")
+@RequestMapping(value = "/categories")
 public class CategoryController {
     private final ICategoryService categoryService;
     private final CategoryMapper categoryMapper;

@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Response.RoleResponse;
-import com.ptitB22CN539.QuizRemake.Entity.RoleEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.RoleEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

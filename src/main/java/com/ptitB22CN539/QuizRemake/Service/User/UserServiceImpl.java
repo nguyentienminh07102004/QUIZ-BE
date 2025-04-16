@@ -1,8 +1,11 @@
 package com.ptitB22CN539.QuizRemake.Service.User;
 
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.UserStatus;
+import com.ptitB22CN539.QuizRemake.Common.Bean.ConstantConfiguration;
+import com.ptitB22CN539.QuizRemake.Common.Enum.UserStatus;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Common.Jwt.JwtGenerator;
 import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
@@ -11,13 +14,10 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
-import com.ptitB22CN539.QuizRemake.Entity.JwtEntity;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity_;
-import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
-import com.ptitB22CN539.QuizRemake.Common.Jwt.JwtGenerator;
 import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
+import com.ptitB22CN539.QuizRemake.Model.Entity.JwtEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity_;
 import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;
 import com.ptitB22CN539.QuizRemake.Repository.IUserRepository;
 import com.ptitB22CN539.QuizRemake.Utils.FileGoogleDrive;
@@ -228,7 +228,7 @@ public class UserServiceImpl implements IUserService {
         }
         String fullName = Objects.requireNonNull(userInfo).get("name").toString();
         String avatar = Objects.requireNonNull(userInfo).get("picture").toString();
-        UserEntity user = userMapper.registerToEntity(new UserRegisterRequest(fullName, email, ConstantConfig.DEFAULT_PASSWORD, ConstantConfig.DEFAULT_PASSWORD, null, UserStatus.ACTIVE));
+        UserEntity user = userMapper.registerToEntity(new UserRegisterRequest(fullName, email, ConstantConfiguration.DEFAULT_PASSWORD, ConstantConfiguration.DEFAULT_PASSWORD, null, UserStatus.ACTIVE));
         user.setAvatar(avatar);
         JwtDTO jwt = jwtGenerator.generateJwtEntity(user);
         JwtEntity jwtEntity = new JwtEntity(jwt.getId(), jwt.getExpires(), user);
@@ -262,7 +262,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void test() {
+    public void deleteJwtExpire() {
         this.jwtRepository.deleteByExpiresBefore(new Date(System.currentTimeMillis()));
     }
 }

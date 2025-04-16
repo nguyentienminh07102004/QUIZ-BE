@@ -1,6 +1,5 @@
 package com.ptitB22CN539.QuizRemake.DTO.Response;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestResultStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,5 +22,4 @@ public class TestResultResponse {
     private Date startedDate;
     private Date finishDate;
     private List<AnswerSelectedResponse> answerSelected;
-    private TestResultStatus status;
 }

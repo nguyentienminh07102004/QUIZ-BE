@@ -1,7 +1,7 @@
 package com.ptitB22CN539.QuizRemake.Repository;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
-import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Common.Enum.TestStatus;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

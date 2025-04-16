@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.Common.Validator.ValidClass;
 
-import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

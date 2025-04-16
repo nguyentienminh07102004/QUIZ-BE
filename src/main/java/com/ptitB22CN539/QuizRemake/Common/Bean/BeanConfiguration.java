@@ -1,4 +1,4 @@
-package com.ptitB22CN539.QuizRemake.Common.BeanApp;
+package com.ptitB22CN539.QuizRemake.Common.Bean;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class BeanConfig {
+public class BeanConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {

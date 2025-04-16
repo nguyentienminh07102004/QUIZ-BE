@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.DTO.Response;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.Difficulty;
+import com.ptitB22CN539.QuizRemake.Common.Enum.Difficulty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -5,7 +5,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
-import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
 import com.ptitB22CN539.QuizRemake.Service.Test.ITestService;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/${api}/tests")
+@RequestMapping(value = "/tests")
 public class TestController {
     private final ITestService testService;
     private final TestMapper testMapper;

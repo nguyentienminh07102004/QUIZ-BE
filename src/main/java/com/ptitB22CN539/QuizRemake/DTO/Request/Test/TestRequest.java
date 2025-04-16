@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.DTO.Request.Test;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.Difficulty;
+import com.ptitB22CN539.QuizRemake.Common.Enum.Difficulty;
 import com.ptitB22CN539.QuizRemake.Common.Validator.QuestionExistsValid;
 import com.ptitB22CN539.QuizRemake.Common.Validator.QuestionHasSameCategory;
 import jakarta.validation.constraints.NotBlank;

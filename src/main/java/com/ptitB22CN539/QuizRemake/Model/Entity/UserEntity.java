@@ -1,7 +1,7 @@
-package com.ptitB22CN539.QuizRemake.Entity;
+package com.ptitB22CN539.QuizRemake.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.UserStatus;
+import com.ptitB22CN539.QuizRemake.Common.Enum.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

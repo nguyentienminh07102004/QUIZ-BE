@@ -9,7 +9,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSocialLogin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserUploadAvatarRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.JwtResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.UserResponse;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
 import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/${api}/users")
+@RequestMapping(value = "/users")
 public class UserController {
     private final IUserService userService;
     private final UserMapper userMapper;

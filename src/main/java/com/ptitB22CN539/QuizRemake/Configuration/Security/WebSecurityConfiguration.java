@@ -1,12 +1,12 @@
 package com.ptitB22CN539.QuizRemake.Configuration.Security;
 
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.UserStatus;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
+import com.ptitB22CN539.QuizRemake.Common.Bean.ConstantConfiguration;
+import com.ptitB22CN539.QuizRemake.Common.Enum.UserStatus;
 import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Common.Jwt.JwtGenerator;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Service.Jwt.IJwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +37,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
 @RequiredArgsConstructor
-public class WebSecurityConfig {
-    @Value(value = "${api}")
-    private String API_PREFIX;
+public class WebSecurityConfiguration {
     @Value(value = "${signerKey}")
     private String signerKey;
     private final AccessDeniedHandler accessDeniedHandler;
@@ -53,35 +51,38 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers(HttpMethod.POST, "/%s/users/login/**".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/users/register".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/users/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/users/count".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/%s/users/change-status/{ids}".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/users/upload-avatar".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/login/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users/count").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/users/change-status/{ids}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/upload-avatar").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/%s/categories/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/categories/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/categories/count".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/categories/").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/categories/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/categories/count").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/%s/questions/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/questions/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/questions/count".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/questions/").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/questions/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/questions/count").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/%s/tests/".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/tests/{id}".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/tests/".formatted(API_PREFIX)).hasRole(ConstantConfig.ROLE_ADMIN)
-                                .requestMatchers(HttpMethod.GET, "/%s/tests/count".formatted(API_PREFIX)).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tests/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tests/{id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/tests/").hasRole(ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.GET, "/tests/count").permitAll()
 
-                                .requestMatchers(HttpMethod.POST, "/%s/test-result/start".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.POST, "/%s/test-result/finish".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/test-result/{id}".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/test-result/count".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/test-result/number-of-player-participating-test".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/test-result/number-of-player-participating-test-for-time".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/tests/same-category".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/%s/tests/rating/user/{testId}".formatted(API_PREFIX)).permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/%s/tests/rate/{testId}/{rate}".formatted(API_PREFIX)).hasAnyRole(ConstantConfig.ROLE_USER, ConstantConfig.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.POST, "/test-result/start").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/test-result/save-answer-test-result").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.POST, "/test-result/finish").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/test-result/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/test-result/count").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test-for-time").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tests/same-category").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/test-result/test/{testResultId}").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.GET, "/test-result/{testResultId}/question/{questionId}").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.GET, "/tests/rating/user/{testId}").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/tests/rate/{testId}/{rate}").hasAnyRole(ConstantConfiguration.ROLE_USER, ConstantConfiguration.ROLE_ADMIN)
 
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
@@ -112,7 +113,7 @@ public class WebSecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        authoritiesConverter.setAuthorityPrefix(ConstantConfig.ROLE_PREFIX);
+        authoritiesConverter.setAuthorityPrefix(ConstantConfiguration.ROLE_PREFIX);
         converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
         return converter;
     }

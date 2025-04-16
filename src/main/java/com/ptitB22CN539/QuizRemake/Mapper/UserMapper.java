@@ -1,13 +1,13 @@
 package com.ptitB22CN539.QuizRemake.Mapper;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.ConstantConfig;
+import com.ptitB22CN539.QuizRemake.Common.Bean.ConstantConfiguration;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.RoleResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.UserResponse;
-import com.ptitB22CN539.QuizRemake.Entity.RoleEntity;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
-import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
+import com.ptitB22CN539.QuizRemake.Model.Entity.RoleEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class UserMapper {
             RoleEntity role = roleService.findByCode(userRegisterRequest.getRoleCode());
             userEntity.setRole(role);
         } else {
-            RoleEntity role = roleService.findByCode(ConstantConfig.ROLE_DEFAULT);
+            RoleEntity role = roleService.findByCode(ConstantConfiguration.ROLE_DEFAULT);
             userEntity.setRole(role);
         }
         return userEntity;

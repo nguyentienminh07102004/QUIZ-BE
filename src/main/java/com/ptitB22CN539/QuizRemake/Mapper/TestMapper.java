@@ -1,13 +1,13 @@
 package com.ptitB22CN539.QuizRemake.Mapper;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
+import com.ptitB22CN539.QuizRemake.Common.Enum.TestStatus;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
-import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity;
-import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
-import com.ptitB22CN539.QuizRemake.Entity.TestRatingEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import lombok.RequiredArgsConstructor;

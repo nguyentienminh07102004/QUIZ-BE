@@ -1,4 +1,4 @@
-package com.ptitB22CN539.QuizRemake.Entity;
+package com.ptitB22CN539.QuizRemake.Model.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

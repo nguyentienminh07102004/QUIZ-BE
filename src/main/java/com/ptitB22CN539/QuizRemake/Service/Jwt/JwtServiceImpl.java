@@ -1,6 +1,6 @@
 package com.ptitB22CN539.QuizRemake.Service.Jwt;
 
-import com.ptitB22CN539.QuizRemake.Entity.JwtEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;

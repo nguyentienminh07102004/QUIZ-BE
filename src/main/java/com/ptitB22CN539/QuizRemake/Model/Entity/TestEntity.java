@@ -1,7 +1,7 @@
-package com.ptitB22CN539.QuizRemake.Entity;
+package com.ptitB22CN539.QuizRemake.Model.Entity;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.Difficulty;
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
+import com.ptitB22CN539.QuizRemake.Common.Enum.Difficulty;
+import com.ptitB22CN539.QuizRemake.Common.Enum.TestStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

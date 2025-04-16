@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +19,6 @@ public class TestResultFinish {
     @NotNull
     @NotBlank
     private String id;
-    private List<AnswerSelectedRequest> answerSelecteds;
     @NotNull
     private Date finishDate;
 }

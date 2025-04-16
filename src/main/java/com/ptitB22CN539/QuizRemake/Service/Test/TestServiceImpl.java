@@ -1,18 +1,18 @@
 package com.ptitB22CN539.QuizRemake.Service.Test;
 
-import com.ptitB22CN539.QuizRemake.Common.BeanApp.TestStatus;
+import com.ptitB22CN539.QuizRemake.Common.Enum.TestStatus;
+import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
+import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
-import com.ptitB22CN539.QuizRemake.Entity.CategoryEntity_;
-import com.ptitB22CN539.QuizRemake.Entity.TestEntity;
-import com.ptitB22CN539.QuizRemake.Entity.TestEntity_;
-import com.ptitB22CN539.QuizRemake.Entity.TestRatingEntity;
-import com.ptitB22CN539.QuizRemake.Entity.TestRatingEntity_;
-import com.ptitB22CN539.QuizRemake.Entity.UserEntity;
-import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
-import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
+import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity_;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity_;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity_;
+import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRatingRepository;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRepository;
 import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
@@ -50,7 +50,7 @@ public class TestServiceImpl implements ITestService {
     @Transactional(readOnly = true)
     public Page<TestEntity> findAll(TestSearchRequest testSearchRequest) {
         Specification<TestEntity> specification = (root, query, builder) -> {
-            List<Predicate> predicates= new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
             if (StringUtils.hasText(testSearchRequest.getTitle())) {
                 predicates.add(builder.like(builder.lower(root.get(TestEntity_.TITLE)),
                         String.join("", "%", testSearchRequest.getTitle().toLowerCase(), "%")));

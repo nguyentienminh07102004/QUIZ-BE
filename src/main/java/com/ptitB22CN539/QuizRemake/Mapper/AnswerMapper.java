@@ -2,7 +2,7 @@ package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Answer.AnswerRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.AnswerResponse;
-import com.ptitB22CN539.QuizRemake.Entity.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Question.QuestionSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
-import com.ptitB22CN539.QuizRemake.Entity.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.QuestionMapper;
 import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/${api}/questions")
+@RequestMapping(value = "/questions")
 public class QuestionController {
     private final IQuestionService questionService;
     private final QuestionMapper questionMapper;

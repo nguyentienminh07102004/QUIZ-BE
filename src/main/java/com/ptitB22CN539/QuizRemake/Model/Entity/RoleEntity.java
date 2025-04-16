@@ -1,4 +1,4 @@
-package com.ptitB22CN539.QuizRemake.Entity;
+package com.ptitB22CN539.QuizRemake.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
