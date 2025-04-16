@@ -50,7 +50,6 @@ public class TestResultRedisServiceImpl implements ITestResultRedisService {
         } else {
             answers.add(answerId);
         }
-        listAnswerOfQuestions.put(questionId, answers);
         this.hashOperations.put(id, questionId, answers);
         this.redisTemplate.expire(id, Duration.ofSeconds(86400));
     }
@@ -59,8 +58,11 @@ public class TestResultRedisServiceImpl implements ITestResultRedisService {
     @Transactional
     public List<String> findAnswersByQuestionId(String testResultId, String questionId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Map<String, Object> listAnswerOfQuestions = hashOperations.entries(this.getKey(email, testResultId));
-        return (List<String>) listAnswerOfQuestions.getOrDefault(questionId, new ArrayList<>());
+        Object result = this.hashOperations.get(this.getKey(email, testResultId), questionId);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return (List<String>) result;
     }
 
     @Override
