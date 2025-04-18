@@ -8,6 +8,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.Test.TestSearchRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.Mapper.TestMapper;
 import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity_;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity_;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity;
@@ -15,8 +16,10 @@ import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity_;
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRatingRepository;
 import com.ptitB22CN539.QuizRemake.Repository.ITestRepository;
+import com.ptitB22CN539.QuizRemake.Service.Question.IQuestionService;
 import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
+import com.ptitB22CN539.QuizRemake.Utils.ReadExcelUtil;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +29,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +44,7 @@ public class TestServiceImpl implements ITestService {
     private final TestMapper testMapper;
     private final ITestRatingRepository testRatingRepository;
     private final IUserService userService;
+    private final IQuestionService questionService;
 
     @Override
     @Transactional
@@ -133,5 +140,36 @@ public class TestServiceImpl implements ITestService {
             entityList.add(testEntity);
         }
         testRepository.saveAll(entityList);
+    }
+
+    @Override
+    @Transactional
+    public List<TestEntity> saveFromExcel(MultipartFile file) {
+        try {
+            ReadExcelUtil<TestRequest> readExcelUtil = new ReadExcelUtil<>();
+            List<TestRequest> testRequests = readExcelUtil.readExcel(file, 0, TestRequest.class);
+            List<TestEntity> testEntities = new ArrayList<>();
+            for (TestRequest testRequest : testRequests) {
+                // validate
+                if (testRequest.getQuestionIds().isEmpty()) {
+                    throw new DataInvalidException(ExceptionVariable.TEST_MUST_HAS_LEAST_QUESTION);
+                }
+                if (testRequest.getQuestionIds().size() > 1) {
+                    QuestionEntity firstQuestion = questionService.findById(testRequest.getQuestionIds().get(0));
+                    for (int i = 1; i < testRequest.getQuestionIds().size(); i++) {
+                        QuestionEntity question = this.questionService.findById(testRequest.getQuestionIds().get(i));
+                        if (!question.getCategory().getCode().equals(firstQuestion.getCategory().getCode())) {
+                            throw new DataInvalidException(ExceptionVariable.QUESTION_HAS_SAME_CATEGORY);
+                        }
+                    }
+                }
+                TestEntity testEntity = this.saveTest(testRequest);
+                testEntities.add(testEntity);
+            }
+            return testEntities;
+        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new DataInvalidException(ExceptionVariable.FILE_TYPE_NOT_SUPPORT);
+        }
     }
 }

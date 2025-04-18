@@ -39,6 +39,8 @@ public enum ExceptionVariable {
     ANSWER_NOT_FOUND(400, "Answer is not exists", HttpStatus.BAD_REQUEST),
 
     CODE_INVALID(400, "Code is invalid", HttpStatus.BAD_REQUEST),
+
+    FILE_TYPE_NOT_SUPPORT(400, "File type don't support", HttpStatus.BAD_REQUEST),
     ;
     private final Integer code;
     private final String message;

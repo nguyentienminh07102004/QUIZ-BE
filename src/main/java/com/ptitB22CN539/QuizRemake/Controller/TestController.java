@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -122,6 +124,18 @@ public class TestController {
         APIResponse response = APIResponse.builder()
                 .code(200)
                 .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping(value = "/save-from-excel")
+    public ResponseEntity<APIResponse> saveTestFromExcel(@RequestPart MultipartFile file) {
+        List<TestEntity> list = this.testService.saveFromExcel(file);
+        List<TestResponse> responses = list.stream().map(testMapper::entityToResponse).toList();
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
+                .data(responses)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
