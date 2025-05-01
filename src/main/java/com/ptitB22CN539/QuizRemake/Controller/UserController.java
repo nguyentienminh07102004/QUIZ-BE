@@ -1,7 +1,10 @@
 package com.ptitB22CN539.QuizRemake.Controller;
 
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangeAdmin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotChangePassword;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotPassword;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
@@ -26,7 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -71,7 +76,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping()
     public ResponseEntity<APIResponse> finAllUsers(@ModelAttribute UserSearchRequest userSearchRequest) {
         Page<UserEntity> entityPage = userService.getAllUsers(userSearchRequest);
         Page<UserResponse> responsePage = entityPage.map(userMapper::entityToResponse);
@@ -133,5 +138,51 @@ public class UserController {
                 .data(userMapper.entityToResponse(userEntity))
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<APIResponse> forgotPassword(@Valid @RequestBody UserForgotPassword userForgotPassword) {
+        this.userService.forgotPassword(userForgotPassword);
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping(value = "/forgot-password")
+    public ResponseEntity<APIResponse> forgotPassword(@Valid @RequestBody UserForgotChangePassword userForgotChangePassword) {
+        this.userService.forgotPassword(userForgotChangePassword);
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping(value = "/change-admin")
+    public ResponseEntity<APIResponse> changeAdmin() {
+        this.userService.changeAdmin();
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping(value = "/change-admin")
+    public ResponseEntity<APIResponse> changeAdmin(@Valid @RequestBody UserChangeAdmin userChangeAdmin) {
+        this.userService.changeAdmin(userChangeAdmin);
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/change-admin")
+    public ModelAndView changeAdmin(@RequestParam String code) {
+        this.userService.verifyChangeAdmin(code);
+        return new ModelAndView("ChangeAdminSuccess");
     }
 }

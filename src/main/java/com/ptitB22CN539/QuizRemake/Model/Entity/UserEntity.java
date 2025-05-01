@@ -56,5 +56,6 @@ public class UserEntity {
     private List<TestResultEntity> testResults;
 
     @OneToMany(mappedBy = "user")
+    @Cascade(value = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<TestRatingEntity> testRatings;
 }

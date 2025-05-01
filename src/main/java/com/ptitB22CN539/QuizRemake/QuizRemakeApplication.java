@@ -22,9 +22,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class QuizRemakeApplication {
     private final IRoleService roleService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(QuizRemakeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(QuizRemakeApplication.class, args);
+    }
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -34,6 +34,9 @@ public class QuizRemakeApplication {
             }
             if (!roleService.existsByCode(ConstantConfiguration.ROLE_USER)) {
                 roleService.save(new RoleEntity("Nguời dùng", ConstantConfiguration.ROLE_USER));
+            }
+            if (!this.roleService.existsByCode(ConstantConfiguration.ROLE_MANAGER)) {
+                this.roleService.save(new RoleEntity("Quản lý", ConstantConfiguration.ROLE_MANAGER));
             }
         };
     }

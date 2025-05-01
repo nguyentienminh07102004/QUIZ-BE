@@ -15,5 +15,6 @@ import java.util.Date;
 @Builder
 public class TestResultStart {
     private String testId;
-    private Date startedDate;
+    @Builder.Default
+    private Date startedDate = new Date(System.currentTimeMillis());
 }

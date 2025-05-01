@@ -21,6 +21,8 @@ public enum ExceptionVariable {
     USER_LOCKED(400, "User locked", HttpStatus.BAD_REQUEST),
     AVATAR_FILE_EMPTY(400, "Avatar file is empty", HttpStatus.BAD_REQUEST),
     OLD_PASSWORD_NEW_PASSWORD_MATCH(400, "Old password is not match", HttpStatus.BAD_REQUEST),
+    FORBIDDEN(403, "Forbidden", HttpStatus.FORBIDDEN),
+    EMAIL_ADMIN_OLD_AND_NEW_MATCH(400, "User admin old and new are not match!", HttpStatus.BAD_REQUEST),
 
     QUESTION_HAS_LEAST_ONE_CORRECT_ANSWER(400, "Question has least one correct answer", HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(400, "Question is not exists", HttpStatus.BAD_REQUEST),

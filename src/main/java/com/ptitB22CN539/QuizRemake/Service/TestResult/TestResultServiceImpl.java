@@ -7,10 +7,10 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
-import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerOfQuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerQuestionResultEntity;
-import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionResultEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Repository.IAnswerRepository;
@@ -62,7 +62,7 @@ public class TestResultServiceImpl implements ITestResultService {
         testResultEntity.setFinishDate(testResultFinish.getFinishDate());
         List<QuestionResultEntity> listOfQuestionResult = new ArrayList<>();
         Integer score = 0;
-        for (QuestionEntity question : test.getQuestions()) {
+        for (QuestionTestEntity question : test.getQuestions()) {
             QuestionResultEntity questionResult = new QuestionResultEntity();
             questionResult.setQuestion(question);
             questionResult.setTestResult(testResultEntity);
@@ -71,7 +71,7 @@ public class TestResultServiceImpl implements ITestResultService {
                 List<AnswerQuestionResultEntity> listOfAnswerQuestionResult = new ArrayList<>();
                 boolean isCorrect = true;
                 for (String answer : listOfAnswers) {
-                    AnswerEntity answerEntity = this.answerRepository.findById(answer)
+                    AnswerOfQuestionTestEntity answerEntity = this.answerRepository.findById(answer)
                             .orElseThrow(() -> new DataInvalidException(ExceptionVariable.ANSWER_NOT_FOUND));
                     AnswerQuestionResultEntity answerQuestionResult = new AnswerQuestionResultEntity(answerEntity, questionResult);
                     if (!answerEntity.getIsCorrect()) {

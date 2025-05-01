@@ -7,7 +7,10 @@ import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
 import com.ptitB22CN539.QuizRemake.Common.Jwt.JwtGenerator;
 import com.ptitB22CN539.QuizRemake.DTO.DTO.JwtDTO;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangeAdmin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotChangePassword;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotPassword;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
@@ -20,6 +23,8 @@ import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity_;
 import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;
 import com.ptitB22CN539.QuizRemake.Repository.IUserRepository;
+import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
+import com.ptitB22CN539.QuizRemake.Utils.EmailUtils;
 import com.ptitB22CN539.QuizRemake.Utils.FileGoogleDrive;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -30,6 +35,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -48,11 +55,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +71,10 @@ public class UserServiceImpl implements IUserService {
     private final JwtGenerator jwtGenerator;
     private final PasswordEncoder passwordEncoder;
     private final IJwtRepository jwtRepository;
+    private final EmailUtils emailUtils;
+    private final HashOperations<String, String, Object> hashOperations;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final IRoleService roleService;
 
     @Value(value = "${google.clientId}")
     private String clientId;
@@ -261,6 +274,88 @@ public class UserServiceImpl implements IUserService {
         return userRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public void forgotPassword(UserForgotPassword userForgotPassword) {
+        String code = UUID.randomUUID().toString();
+        this.hashOperations.put("codeForgot:%s".formatted(code), "email", userForgotPassword.getEmail());
+        this.redisTemplate.expire("%s:%s".formatted(userForgotPassword.getEmail(), code), Duration.ofSeconds(300));
+        this.emailUtils.sendEmail(userForgotPassword.getEmail(), "ForgotPassword", "ForgotPassword", Map.of("code", code));
+    }
+
+    @Override
+    @Transactional
+    public void forgotPassword(UserForgotChangePassword userForgotChangePassword) {
+        String code = userForgotChangePassword.getCode();
+        Object email = this.hashOperations.get("codeForgot:%s".formatted(code), "email");
+        if (email == null) {
+            throw new DataInvalidException(ExceptionVariable.CODE_INVALID);
+        }
+        if (!userForgotChangePassword.getConfirmPassword().equals(userForgotChangePassword.getNewPassword())) {
+            throw new DataInvalidException(ExceptionVariable.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
+        }
+        UserEntity user = this.getUserByEmail(email.toString());
+        user.setPassword(passwordEncoder.encode(userForgotChangePassword.getNewPassword()));
+        this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changeAdmin() {
+        UserEntity user = this.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!user.getRole().getCode().equals(ConstantConfiguration.ROLE_ADMIN)) {
+            throw new DataInvalidException(ExceptionVariable.FORBIDDEN);
+        }
+        String code = UUID.randomUUID().toString();
+        this.hashOperations.put("changeAdmin:%s".formatted(user.getEmail()), "code", code);
+        this.redisTemplate.expire("changeAdmin:%s".formatted(user.getEmail()), Duration.ofSeconds(300));
+        this.emailUtils.sendEmail(user.getEmail(), "You want to change admin", "ChangeAdmin", Map.of("code", code));
+    }
+
+    @Override
+    @Transactional
+    public void changeAdmin(UserChangeAdmin userChangeAdmin) {
+        UserEntity user = this.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Object code = this.hashOperations.get("changeAdmin:%s".formatted(user.getEmail()), "code");
+        if (code == null) {
+            throw new DataInvalidException(ExceptionVariable.CODE_INVALID);
+        }
+        code = code.toString();
+        if (!userChangeAdmin.getCode().equals(code)) {
+            throw new DataInvalidException(ExceptionVariable.CODE_INVALID);
+        }
+        if (userChangeAdmin.getEmail().equals(user.getEmail())) {
+            throw new DataInvalidException(ExceptionVariable.EMAIL_ADMIN_OLD_AND_NEW_MATCH);
+        }
+        code = UUID.randomUUID().toString();
+        this.redisTemplate.opsForValue().set("VerifyChangeAdminCode", code);
+        this.redisTemplate.opsForValue().set("VerifyChangeAdminEmail", userChangeAdmin.getEmail());
+        this.redisTemplate.expire("VerifyChangeAdminCode", Duration.ofSeconds(300));
+        this.emailUtils.sendEmail(userChangeAdmin.getEmail(), "Change admin for you", "VerifyChangeAdmin", Map.of("confirmationLink", "http://localhost:8080/api/v2/users/change-admin?code=%s".formatted(code)));
+    }
+
+    @Override
+    @Transactional
+    public void verifyChangeAdmin(String code) {
+        Object codeVerify = this.redisTemplate.opsForValue().get("VerifyChangeAdminCode");
+        if (codeVerify == null) {
+            throw new DataInvalidException(ExceptionVariable.CODE_INVALID);
+        }
+        if (!code.equals(codeVerify.toString())) {
+            throw new DataInvalidException(ExceptionVariable.CODE_INVALID);
+        }
+        UserEntity user = this.userRepository.findByRole_Code(ConstantConfiguration.ROLE_ADMIN);
+        String email = String.valueOf(this.redisTemplate.opsForValue().get("VerifyChangeAdminEmail"));
+        if (this.userRepository.existsByEmail(email)) {
+            UserEntity userEntity = this.getUserByEmail(email);
+            userEntity.setRole(this.roleService.findByCode(ConstantConfiguration.ROLE_ADMIN));
+            this.userRepository.save(userEntity);
+            this.userRepository.delete(user);
+        } else {
+            user.setEmail(email);
+            this.userRepository.save(user);
+        }
+    }
     @Scheduled(cron = "0 0 0 * * *")
     public void deleteJwtExpire() {
         this.jwtRepository.deleteByExpiresBefore(new Date(System.currentTimeMillis()));

@@ -1,6 +1,9 @@
 package com.ptitB22CN539.QuizRemake.Service.User;
 
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangeAdmin;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserChangePasswordRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotChangePassword;
+import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserForgotPassword;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserLoginRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserRegisterRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.User.UserSearchRequest;
@@ -26,4 +29,10 @@ public interface IUserService {
     JwtResponse loginSocial(UserSocialLogin userSocialLogin);
     Long countALlUsers();
     UserEntity uploadAvatar(UserUploadAvatarRequest avatarRequest);
+    void forgotPassword(UserForgotPassword userForgotPassword);
+    void forgotPassword(UserForgotChangePassword userForgotChangePassword);
+    void changeAdmin();
+    void changeAdmin(UserChangeAdmin userChangeAdmin);
+
+    void verifyChangeAdmin(String code);
 }

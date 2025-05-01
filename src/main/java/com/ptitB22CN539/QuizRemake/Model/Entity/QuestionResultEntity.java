@@ -30,7 +30,7 @@ public class QuestionResultEntity {
     private String id;
     @ManyToOne
     @JoinColumn(name = "questionId")
-    private QuestionEntity question;
+    private QuestionTestEntity question;
     @ManyToOne
     @JoinColumn(name = "testResultId")
     private TestResultEntity testResult;

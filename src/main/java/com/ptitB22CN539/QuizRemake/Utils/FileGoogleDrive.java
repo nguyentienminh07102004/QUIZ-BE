@@ -42,6 +42,7 @@ public class FileGoogleDrive {
                     .execute();
             return file.getId();
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
         }
     }
@@ -60,7 +61,7 @@ public class FileGoogleDrive {
         return new Drive.Builder(new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
                 requestInitializer)
-                .setApplicationName("QUIZ")
+                .setApplicationName("Quiz")
                 .build();
     }
     private static String getServiceAccountKey() {

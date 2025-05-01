@@ -8,15 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Table(name = "answers")
+@Table(name = "answerOfQuestionTests")
 @Getter
 @Setter
-public class AnswerEntity {
+public class AnswerOfQuestionTestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -28,5 +31,8 @@ public class AnswerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "questionId", referencedColumnName = "id")
-    private QuestionEntity question;
+    private QuestionTestEntity question;
+
+    @OneToMany(mappedBy = "answer")
+    private List<AnswerQuestionResultEntity> answerQuestionResults;
 }

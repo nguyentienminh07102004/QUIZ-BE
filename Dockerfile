@@ -7,5 +7,6 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-ea-oracle
 WORKDIR /app
 COPY --from=build /app/target/*.war app.war
-
+COPY Cred.json Cred.json
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.war"]

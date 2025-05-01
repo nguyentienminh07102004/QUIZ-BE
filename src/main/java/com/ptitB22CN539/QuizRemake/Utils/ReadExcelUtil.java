@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ReadExcelUtil<T> {
-    public List<T> readExcel(MultipartFile file, Integer sheetIndex, Class<T> cla)
+@Component
+public class ReadExcelUtil {
+    public <T> List<T> readExcel(MultipartFile file, Integer sheetIndex, Class<T> cla)
             throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         List<T> list = new ArrayList<>();
         InputStream inputStream = file.getInputStream();
@@ -74,27 +76,27 @@ public class ReadExcelUtil<T> {
                 };
                 dataValues.put(cell.getColumnIndex(), data);
             }
+            T t = cla.getDeclaredConstructor().newInstance();
+            Field[] fields = cla.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Class<?> type = field.getType();
+                String fieldName = field.getName().strip().toLowerCase();
+                Integer index = titleMapToIndex.get(fieldName);
+                Object data = dataValues.get(index);
+                // set data
+                if (type.equals(Integer.class)) {
+                    double doubleValue = Double.parseDouble(data.toString());
+                    field.set(t, (int) doubleValue);
+                } else if (type.equals(Long.class)) {
+                    double doubleValue = Double.parseDouble(data.toString());
+                    field.set(t, (long) doubleValue);
+                } else if (field.getType().isEnum()) {
+                    field.set(this, Enum.valueOf((Class<Enum>) field.getType(), String.valueOf(data)));
+                } else field.set(t, data);
+            }
+            list.add(t);
         }
-        T t = cla.getDeclaredConstructor().newInstance();
-        Field[] fields = cla.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Class<?> type = field.getType();
-            String fieldName = field.getName().strip().toLowerCase();
-            Integer index = titleMapToIndex.get(fieldName);
-            Object data = dataValues.get(index);
-            // set data
-            if (type.equals(Integer.class)) {
-                double doubleValue = Double.parseDouble(data.toString());
-                field.set(t, (int) doubleValue);
-            } else if (type.equals(Long.class)) {
-                double doubleValue = Double.parseDouble(data.toString());
-                field.set(t, (long) doubleValue);
-            } else if (field.getType().isEnum()) {
-                field.set(this, Enum.valueOf((Class<Enum>) field.getType(), String.valueOf(data)));
-            } else field.set(t, data);
-        }
-        list.add(t);
         return list;
     }
 }

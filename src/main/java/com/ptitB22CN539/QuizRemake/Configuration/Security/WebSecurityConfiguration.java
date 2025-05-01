@@ -53,46 +53,56 @@ public class WebSecurityConfiguration {
                         request
                                 .requestMatchers(HttpMethod.POST, "/users/login/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/users/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.GET, "/users/count").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/users/change-status/{ids}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/users/upload-avatar").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/users/change-status/{ids}").hasRole(ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.POST, "/users/upload-avatar").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/users/forgot-password").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/users/forgot-password").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/logout").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/users/change-admin").hasRole(ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.PUT, "/users/change-admin").hasRole(ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.GET, "/users/change-admin").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/categories/").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/categories/").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/categories/count").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/categories").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/categories").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.PUT, "/categories").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.POST, "/categories/save-from-file").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.GET, "/categories/count").access(new AuthorizationNotRoleUser())
 
-                                .requestMatchers(HttpMethod.GET, "/questions/").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/questions/").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/questions/count").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/questions").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/questions").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.PUT, "/questions").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.DELETE, "/questions").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.GET, "/questions/count").access(new AuthorizationNotRoleUser())
 
-                                .requestMatchers(HttpMethod.GET, "/tests/").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tests").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/tests/{id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/tests/").hasRole(ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.POST, "/tests").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.GET, "/tests/count").permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "/test-result/start").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/test-result/save-answer-test-result").hasRole(ConstantConfiguration.ROLE_USER)
-                                .requestMatchers(HttpMethod.POST, "/test-result/finish").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/test-result/{id}").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/test-result/count").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test-for-time").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/test-result/finish").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.GET, "/test-result/{id}").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/test-result/count").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test-for-time").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.GET, "/tests/same-category").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/test-result/test/{testResultId}").hasRole(ConstantConfiguration.ROLE_USER)
                                 .requestMatchers(HttpMethod.GET, "/test-result/{testResultId}/question/{questionId}").hasRole(ConstantConfiguration.ROLE_USER)
                                 .requestMatchers(HttpMethod.GET, "/tests/rating/user/{testId}").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/tests/rate/{testId}/{rate}").hasAnyRole(ConstantConfiguration.ROLE_USER, ConstantConfiguration.ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.PUT, "/tests/rate/{testId}/{rate}").hasAnyRole(ConstantConfiguration.ROLE_USER)
 
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2
-                            .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                            .jwt(jwtConfigurer -> jwtConfigurer
+                                    .decoder(jwtDecoder())
                                     .jwtAuthenticationConverter(jwtAuthenticationConverter()));
                     oauth2.authenticationEntryPoint(authenticationEntryPoint);
                 });
-                httpSecurity.cors(cors -> corsFilter());
                 httpSecurity.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler));
         return httpSecurity.build();
     }

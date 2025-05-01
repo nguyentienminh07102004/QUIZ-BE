@@ -6,6 +6,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Response.QuestionResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestRatingResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResponse;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestRatingEntity;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
@@ -28,13 +29,14 @@ public class TestMapper {
     private final IQuestionService questionService;
 
     public TestEntity requestToEntity(TestRequest testRequest) {
-        TestEntity testEntity = modelMapper.map(testRequest, TestEntity.class);
-        List<QuestionEntity> listQuestion = new ArrayList<>();
+        TestEntity testEntity = this.modelMapper.map(testRequest, TestEntity.class);
+        List<QuestionTestEntity> listQuestion = new ArrayList<>();
         for (String questionId : testRequest.getQuestionIds()) {
-            QuestionEntity questionEntity = questionService.findById(questionId);
-            listQuestion.add(questionEntity);
+            QuestionEntity questionEntity = this.questionService.findById(questionId);
+            QuestionTestEntity questionTestEntity = this.questionMapper.questionToQuestionTest(questionEntity, testEntity);
+            listQuestion.add(questionTestEntity);
         }
-        testEntity.setCategory(categoryService.findByCode(testRequest.getCategoryCode()));
+        testEntity.setCategory(this.categoryService.findByCode(testRequest.getCategoryCode()));
         testEntity.setQuestions(listQuestion);
         testEntity.setStatus(TestStatus.ACTIVE);
         return testEntity;

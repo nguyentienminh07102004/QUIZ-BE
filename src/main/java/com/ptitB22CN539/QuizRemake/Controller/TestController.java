@@ -36,19 +36,21 @@ public class TestController {
     private final ITestService testService;
     private final TestMapper testMapper;
 
-    @PostMapping(value = "/")
-    public ResponseEntity<APIResponse> saveTest(@Valid @RequestBody TestRequest testRequest) {
-        TestEntity testEntity = testService.saveTest(testRequest);
-        TestResponse testResponse = testMapper.entityToResponse(testEntity);
+    @PostMapping()
+    public ResponseEntity<APIResponse> saveTest(@Valid @RequestBody List<TestRequest> testRequests) {
+        List<TestEntity> testEntities = this.testService.saveTest(testRequests);
+        List<TestResponse> testResponses = testEntities.stream()
+                .map(this.testMapper::entityToResponse)
+                .toList();
         APIResponse response = APIResponse.builder()
                 .code(HttpStatus.CREATED.value())
                 .message("SUCCESS")
-                .data(testResponse)
+                .data(testResponses)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping()
     public ResponseEntity<APIResponse> findTest(@ModelAttribute TestSearchRequest testSearchRequest) {
         Page<TestEntity> testPage = testService.findAll(testSearchRequest);
         PagedModel<TestResponse> responsePagedModel = new PagedModel<>(testPage.map(testMapper::entityToResponse));

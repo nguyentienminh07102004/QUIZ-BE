@@ -24,12 +24,12 @@ public class AnswerQuestionResultEntity {
     private String id;
     @ManyToOne
     @JoinColumn(name = "answerId")
-    private AnswerEntity answer;
+    private AnswerOfQuestionTestEntity answer;
     @ManyToOne
     @JoinColumn(name = "questionResultId")
     private QuestionResultEntity questionResult;
 
-    public AnswerQuestionResultEntity(AnswerEntity answer, QuestionResultEntity questionResult) {
+    public AnswerQuestionResultEntity(AnswerOfQuestionTestEntity answer, QuestionResultEntity questionResult) {
         this.answer = answer;
         this.questionResult = questionResult;
     }

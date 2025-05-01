@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 .env
 Cred.json
+tokens/
 
 ### STS ###
 .apt_generated

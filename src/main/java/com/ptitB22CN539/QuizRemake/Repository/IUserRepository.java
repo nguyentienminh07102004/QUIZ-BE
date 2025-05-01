@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface IUserRepository extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
     Optional<UserEntity> findByEmail(String email);
     boolean existsByEmail(String email);
+    UserEntity findByRole_Code(String roleCode);
 }

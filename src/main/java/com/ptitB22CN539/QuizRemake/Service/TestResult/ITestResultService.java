@@ -16,9 +16,7 @@ public interface ITestResultService {
     void saveAnswerOfTestResult(String testResultId, String questionId, String answerId);
     TestEntity findTestByTestResultId(String testResultId);
     Long countAllTestResult();
-
     List<String> findAnswerSelectedIdsOfTestResult(String testResultId, String questionId);
-
     List<NumberOfPlayerParticipatingTestResponse> numberOfPlayerParticipatingTest(Long limit);
     List<NumberOfPlayerParticipatingForTime> numberOfPlayerParticipatingForTime();
 }

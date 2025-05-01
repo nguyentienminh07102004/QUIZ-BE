@@ -2,9 +2,10 @@ package com.ptitB22CN539.QuizRemake.Controller;
 
 import com.ptitB22CN539.QuizRemake.DTO.APIResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryUpdate;
 import com.ptitB22CN539.QuizRemake.DTO.Response.CategoryResponse;
-import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import com.ptitB22CN539.QuizRemake.Mapper.CategoryMapper;
+import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +31,7 @@ public class CategoryController {
     private final ICategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
-    @PostMapping(value = "/")
+    @PostMapping()
     public ResponseEntity<APIResponse> saveCategory(@Valid @RequestBody CategoryRequest category) {
         CategoryEntity categoryEntity = categoryService.saveCategory(category);
         CategoryResponse categoryResponse = categoryMapper.entityToResponse(categoryEntity);
@@ -38,7 +43,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping()
     public ResponseEntity<APIResponse> findAllCategories(@RequestParam(required = false) Integer page,
                                                          @RequestParam(required = false) Integer limit) {
         Page<CategoryEntity> entityPage = categoryService.findAll(page, limit);
@@ -60,5 +65,29 @@ public class CategoryController {
                 .data(countAllCategory)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping(value = "/save-from-file")
+    public ResponseEntity<APIResponse> saveCategoryFromFile(@RequestParam MultipartFile file) {
+        List<CategoryEntity> categoryEntities = categoryService.saveFromExcel(file);
+        List<CategoryResponse> categoryResponses = categoryEntities.stream().map(categoryMapper::entityToResponse).toList();
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.CREATED.value())
+                .message("SUCCESS")
+                .data(categoryResponses)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping()
+    public ResponseEntity<APIResponse> updateCategory(@Valid @RequestBody CategoryUpdate category) {
+        CategoryEntity categoryEntity = this.categoryService.updateCategory(category);
+        CategoryResponse categoryResponse = this.categoryMapper.entityToResponse(categoryEntity);
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .data(categoryResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

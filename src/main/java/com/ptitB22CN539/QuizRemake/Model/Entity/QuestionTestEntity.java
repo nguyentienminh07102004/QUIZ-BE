@@ -13,28 +13,38 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "questionTests")
 @Getter
 @Setter
-public class QuestionEntity {
+public class QuestionTestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+    @Column()
     private String id;
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
-    @Column(name = "shortDescription", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String shortDescription;
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @Cascade(value = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
-    private List<AnswerEntity> answers;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<AnswerOfQuestionTestEntity> answers;
+
+    @ManyToOne
+    @JoinColumn(name = "testId")
+    private TestEntity test;
+
+    @OneToMany(mappedBy = "question")
+    private List<QuestionResultEntity> answerSelecteds;
 
     @ManyToOne
     @JoinColumn(name = "categoryCode", referencedColumnName = "code")

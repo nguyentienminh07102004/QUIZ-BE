@@ -10,8 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -19,6 +17,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -46,15 +46,14 @@ public class TestEntity {
     @Cascade(value = {CascadeType.REMOVE})
     private List<TestRatingEntity> testRatings;
 
-    @ManyToMany
-    @JoinTable(name = "questionTest",
-            joinColumns = @JoinColumn(name = "testId"),
-            inverseJoinColumns = @JoinColumn(name = "questionId"))
-    private List<QuestionEntity> questions;
-
     @OneToMany(mappedBy = "test", orphanRemoval = true)
     @Cascade(value = {CascadeType.REMOVE})
     private List<TestResultEntity> testResults;
+
+    @OneToMany(mappedBy = "test")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Cascade(value = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
+    private List<QuestionTestEntity> questions;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "categoryCode", referencedColumnName = "code")

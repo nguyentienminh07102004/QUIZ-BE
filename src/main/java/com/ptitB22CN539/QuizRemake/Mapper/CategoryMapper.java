@@ -1,6 +1,7 @@
 package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
+import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryUpdate;
 import com.ptitB22CN539.QuizRemake.DTO.Response.CategoryResponse;
 import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,9 @@ public class CategoryMapper {
 
     public CategoryResponse entityToResponse(CategoryEntity categoryEntity) {
         return modelMapper.map(categoryEntity, CategoryResponse.class);
+    }
+
+    public CategoryEntity toEntity(CategoryUpdate categoryUpdate) {
+        return this.modelMapper.map(categoryUpdate, CategoryEntity.class);
     }
 }

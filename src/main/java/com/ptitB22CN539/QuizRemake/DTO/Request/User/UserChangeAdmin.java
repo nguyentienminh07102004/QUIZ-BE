@@ -1,5 +1,6 @@
-package com.ptitB22CN539.QuizRemake.DTO.Request.TestResult;
+package com.ptitB22CN539.QuizRemake.DTO.Request.User;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,18 +9,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TestResultFinish {
-    @NotNull
-    @NotBlank
-    private String id;
-    @NotNull
-    @Builder.Default
-    private Date finishDate = new Date(System.currentTimeMillis());
+public class UserChangeAdmin {
+    @Email
+    private String email;
+    @NotBlank(message = "CODE_INVALID")
+    @NotNull(message = "CODE_INVALID")
+    private String code;
 }

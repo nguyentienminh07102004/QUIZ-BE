@@ -2,7 +2,7 @@ package com.ptitB22CN539.QuizRemake.Mapper;
 
 import com.ptitB22CN539.QuizRemake.DTO.Response.AnswerSelectedResponse;
 import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
-import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerEntity;
+import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerOfQuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerQuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
@@ -32,7 +32,7 @@ public class TestResultMapper {
             AnswerSelectedResponse answerSelectedResponse = new AnswerSelectedResponse();
             answerSelectedResponse.setStatus(questionResult.getStatus());
             answerSelectedResponse.setQuestionId(questionResult.getQuestion().getId());
-            answerSelectedResponse.setAnswerIds(questionResult.getAnswers().stream().map(AnswerQuestionResultEntity::getAnswer).map(AnswerEntity::getId).toList());
+            answerSelectedResponse.setAnswerIds(questionResult.getAnswers().stream().map(AnswerQuestionResultEntity::getAnswer).map(AnswerOfQuestionTestEntity::getId).toList());
             listAnswerSelectedResponse.add(answerSelectedResponse);
         }
         testResultResponse.setAnswerSelected(listAnswerSelectedResponse);

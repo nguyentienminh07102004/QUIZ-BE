@@ -45,9 +45,20 @@ public class TestServiceImpl implements ITestService {
     private final ITestRatingRepository testRatingRepository;
     private final IUserService userService;
     private final IQuestionService questionService;
+    private final ReadExcelUtil readExcelUtil;
 
     @Override
     @Transactional
+    public List<TestEntity> saveTest(List<TestRequest> testRequest) {
+        List<TestEntity> testEntities = new ArrayList<>();
+        for (TestRequest request : testRequest) {
+            testEntities.add(this.saveTest(request));
+        }
+        return testEntities;
+    }
+
+    @Transactional
+    @Override
     public TestEntity saveTest(TestRequest testRequest) {
         TestEntity testEntity = testMapper.requestToEntity(testRequest);
         return testRepository.save(testEntity);
@@ -146,8 +157,7 @@ public class TestServiceImpl implements ITestService {
     @Transactional
     public List<TestEntity> saveFromExcel(MultipartFile file) {
         try {
-            ReadExcelUtil<TestRequest> readExcelUtil = new ReadExcelUtil<>();
-            List<TestRequest> testRequests = readExcelUtil.readExcel(file, 0, TestRequest.class);
+            List<TestRequest> testRequests = this.readExcelUtil.readExcel(file, 0, TestRequest.class);
             List<TestEntity> testEntities = new ArrayList<>();
             for (TestRequest testRequest : testRequests) {
                 // validate

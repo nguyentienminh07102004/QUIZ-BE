@@ -1,0 +1,18 @@
+package com.ptitB22CN539.QuizRemake.DTO.Request.User;
+
+import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UserForgotPassword {
+    @Email(message = "EMAIL_INVALID")
+    private String email;
+}

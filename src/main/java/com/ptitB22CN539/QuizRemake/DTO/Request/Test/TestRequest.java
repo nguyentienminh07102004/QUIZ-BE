@@ -25,6 +25,8 @@ public class TestRequest {
     @NotBlank(message = "TEST_TITLE_NOT_NULL_OR_EMPTY")
     private String title;
     private String description;
+    @NotNull(message = "TEST_TITLE_NOT_NULL_OR_EMPTY")
+    @NotBlank(message = "TEST_TITLE_NOT_NULL_OR_EMPTY")
     private String categoryCode;
     private Difficulty difficulty;
     @NotNull(message = "TEST_MUST_HAS_LEAST_QUESTION")
