@@ -10,6 +10,7 @@ import com.ptitB22CN539.QuizRemake.Service.Category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Window;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +84,18 @@ public class CategoryController {
     public ResponseEntity<APIResponse> updateCategory(@Valid @RequestBody CategoryUpdate category) {
         CategoryEntity categoryEntity = this.categoryService.updateCategory(category);
         CategoryResponse categoryResponse = this.categoryMapper.entityToResponse(categoryEntity);
+        APIResponse response = APIResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("SUCCESS")
+                .data(categoryResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/scroll")
+    public ResponseEntity<APIResponse> findAll(@RequestParam(required = false) Integer page,
+                                               @RequestParam(required = false) Integer limit) {
+        Window<CategoryResponse> categoryResponse = this.categoryService.findAllCategoryWindow(page, limit);
         APIResponse response = APIResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("SUCCESS")

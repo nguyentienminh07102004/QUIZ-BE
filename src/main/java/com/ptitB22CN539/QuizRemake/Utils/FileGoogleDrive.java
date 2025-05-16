@@ -47,12 +47,12 @@ public class FileGoogleDrive {
         }
     }
 
-    public static void deleteAvatar(String id) {
+    public static void deleteFileGoogleImage(String id) {
         try {
             Drive drive = getDrive();
             drive.files().delete(id).execute();
         } catch (IOException exception) {
-            throw new DataInvalidException(ExceptionVariable.SERVER_ERROR);
+            throw new DataInvalidException(ExceptionVariable.FILE_ID_NOT_FOUND);
         }
     }
 
@@ -84,5 +84,9 @@ public class FileGoogleDrive {
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    }
+
+    public static String getImageLinkGoogleDrive(String id) {
+        return "https://drive.google.com/thumbnail?id=%s".formatted(id);
     }
 }

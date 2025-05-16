@@ -1,4 +1,4 @@
-package com.ptitB22CN539.QuizRemake.Repository;
+package com.ptitB22CN539.QuizRemake.JpaRepository;
 
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -19,7 +19,6 @@ public class TestResultFinish {
     @NotNull
     @NotBlank
     private String id;
-    @NotNull
     @Builder.Default
     private Date finishDate = new Date(System.currentTimeMillis());
 }

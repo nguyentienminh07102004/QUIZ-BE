@@ -6,7 +6,7 @@ import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerOfQuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerQuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
-import com.ptitB22CN539.QuizRemake.Repository.IQuestionResultRepository;
+import com.ptitB22CN539.QuizRemake.JpaRepository.IQuestionResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

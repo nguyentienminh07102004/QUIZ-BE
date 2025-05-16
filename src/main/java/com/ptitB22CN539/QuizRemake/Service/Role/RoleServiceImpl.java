@@ -3,7 +3,7 @@ package com.ptitB22CN539.QuizRemake.Service.Role;
 import com.ptitB22CN539.QuizRemake.Model.Entity.RoleEntity;
 import com.ptitB22CN539.QuizRemake.Common.Exception.DataInvalidException;
 import com.ptitB22CN539.QuizRemake.Common.Exception.ExceptionVariable;
-import com.ptitB22CN539.QuizRemake.Repository.IRoleRepository;
+import com.ptitB22CN539.QuizRemake.JpaRepository.IRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

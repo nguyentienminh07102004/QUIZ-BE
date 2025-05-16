@@ -64,11 +64,16 @@ public class WebSecurityConfiguration {
                                 .requestMatchers(HttpMethod.PUT, "/users/change-admin").hasRole(ConstantConfiguration.ROLE_ADMIN)
                                 .requestMatchers(HttpMethod.GET, "/users/change-admin").permitAll()
 
+                                .requestMatchers(HttpMethod.POST, "/chats").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.POST, "/chats/files").hasRole(ConstantConfiguration.ROLE_USER)
+                                .requestMatchers(HttpMethod.GET, "/chats/files/{id}").permitAll()
+
                                 .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/categories").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.PUT, "/categories").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.POST, "/categories/save-from-file").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.GET, "/categories/count").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.GET, "/categories/scroll").access(new AuthorizationNotRoleUser())
 
                                 .requestMatchers(HttpMethod.GET, "/questions").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/questions").access(new AuthorizationNotRoleUser())
@@ -94,6 +99,8 @@ public class WebSecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/tests/rating/user/{testId}").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/tests/rate/{testId}/{rate}").hasAnyRole(ConstantConfiguration.ROLE_USER)
 
+                                .requestMatchers("/ws**").permitAll()
+
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> {
@@ -103,6 +110,7 @@ public class WebSecurityConfiguration {
                                     .jwtAuthenticationConverter(jwtAuthenticationConverter()));
                     oauth2.authenticationEntryPoint(authenticationEntryPoint);
                 });
+                httpSecurity.cors(cors -> corsFilter());
                 httpSecurity.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler));
         return httpSecurity.build();
     }

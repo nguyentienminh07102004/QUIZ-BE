@@ -2,8 +2,10 @@ package com.ptitB22CN539.QuizRemake.Service.Category;
 
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryRequest;
 import com.ptitB22CN539.QuizRemake.DTO.Request.Category.CategoryUpdate;
+import com.ptitB22CN539.QuizRemake.DTO.Response.CategoryResponse;
 import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Window;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -16,4 +18,5 @@ public interface ICategoryService {
     Long countAllCategory();
     List<CategoryEntity> findAll();
     List<CategoryEntity> saveFromExcel(MultipartFile file);
+    Window<CategoryResponse> findAllCategoryWindow(Integer page, Integer limit);
 }

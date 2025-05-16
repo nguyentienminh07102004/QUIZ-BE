@@ -1,5 +1,8 @@
 package com.ptitB22CN539.QuizRemake.Configuration.Redis;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +33,9 @@ public class RedisConfiguration {
         redisTemplate.setConnectionFactory(connectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setHashValueSerializer(genericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer());
+        redisTemplate.setDefaultSerializer(genericJackson2JsonRedisSerializer());
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
@@ -40,5 +43,15 @@ public class RedisConfiguration {
     @Bean
     public HashOperations<String, String, Object> hashOperations() {
         return this.redisTemplate().opsForHash();
+    }
+
+    @Bean
+    public GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        objectMapper.setConfig(objectMapper.getDeserializationConfig()
+                .with(DeserializationFeature.USE_LONG_FOR_INTS)
+                .with(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS));
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
 }

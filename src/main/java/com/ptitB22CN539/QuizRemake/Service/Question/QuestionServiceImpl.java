@@ -10,7 +10,7 @@ import com.ptitB22CN539.QuizRemake.Model.Entity.CategoryEntity_;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionEntity_;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity_;
-import com.ptitB22CN539.QuizRemake.Repository.IQuestionRepository;
+import com.ptitB22CN539.QuizRemake.JpaRepository.IQuestionRepository;
 import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
 import com.ptitB22CN539.QuizRemake.Utils.ReadExcelUtil;
 import jakarta.persistence.criteria.Predicate;

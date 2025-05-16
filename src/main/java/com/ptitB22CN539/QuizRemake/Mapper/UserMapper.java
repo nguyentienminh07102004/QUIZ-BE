@@ -9,6 +9,7 @@ import com.ptitB22CN539.QuizRemake.DTO.Response.UserResponse;
 import com.ptitB22CN539.QuizRemake.Model.Entity.RoleEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
+import com.ptitB22CN539.QuizRemake.Utils.FileGoogleDrive;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -44,7 +45,7 @@ public class UserMapper {
         RoleResponse roleResponse = roleMapper.entityToResponse(userEntity.getRole());
         userResponse.setRole(roleResponse);
         if (userEntity.getAvatar() != null && !userEntity.getAvatar().contains("https")) {
-            userResponse.setAvatar("https://drive.google.com/thumbnail?id=%s".formatted(userEntity.getAvatar()));
+            userResponse.setAvatar(FileGoogleDrive.getImageLinkGoogleDrive(userEntity.getAvatar()));
         }
         return userResponse;
     }

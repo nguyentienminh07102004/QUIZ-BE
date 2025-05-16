@@ -54,6 +54,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping(value = "/my-info")
+    public ResponseEntity<APIResponse> getMyInfo() {
+        UserEntity user = this.userService.getMyInfo();
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
+                .data(this.userMapper.entityToResponse(user))
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping(value = "/login")
     public ResponseEntity<APIResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
         JwtResponse jwt = userService.login(userLoginRequest);

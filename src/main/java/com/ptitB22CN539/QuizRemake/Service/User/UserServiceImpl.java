@@ -21,8 +21,8 @@ import com.ptitB22CN539.QuizRemake.Mapper.UserMapper;
 import com.ptitB22CN539.QuizRemake.Model.Entity.JwtEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.UserEntity_;
-import com.ptitB22CN539.QuizRemake.Repository.IJwtRepository;
-import com.ptitB22CN539.QuizRemake.Repository.IUserRepository;
+import com.ptitB22CN539.QuizRemake.JpaRepository.IJwtRepository;
+import com.ptitB22CN539.QuizRemake.JpaRepository.IUserRepository;
 import com.ptitB22CN539.QuizRemake.Service.Role.IRoleService;
 import com.ptitB22CN539.QuizRemake.Utils.EmailUtils;
 import com.ptitB22CN539.QuizRemake.Utils.FileGoogleDrive;
@@ -267,7 +267,7 @@ public class UserServiceImpl implements IUserService {
         UserEntity user = this.getUserByEmail(email);
         // delete file if exists and not login social
         if (user.getAvatar() != null && !user.getAvatar().contains("https")) {
-            FileGoogleDrive.deleteAvatar(user.getAvatar());
+            FileGoogleDrive.deleteFileGoogleImage(user.getAvatar());
         }
         String id = FileGoogleDrive.uploadFileGoogleDrive(avatar.getAvatar());
         user.setAvatar(id);
