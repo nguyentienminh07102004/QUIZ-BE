@@ -4,8 +4,10 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
+import org.springframework.data.web.PagedModel;
 
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface ITestResultService {
     List<String> findAnswerSelectedIdsOfTestResult(String testResultId, String questionId);
     List<NumberOfPlayerParticipatingTestResponse> numberOfPlayerParticipatingTest(Long limit);
     List<NumberOfPlayerParticipatingForTime> numberOfPlayerParticipatingForTime();
+    PagedModel<TestResultResponse> getMyTestResults(Integer page, Integer limit);
+    PagedModel<TestResultResponse> getAllTestResults(Integer page, Integer limit);
 }

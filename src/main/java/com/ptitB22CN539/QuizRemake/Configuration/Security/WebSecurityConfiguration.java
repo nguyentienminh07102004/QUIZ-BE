@@ -93,6 +93,8 @@ public class WebSecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/test-result/count").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test").access(new AuthorizationNotRoleUser())
                                 .requestMatchers(HttpMethod.GET, "/test-result/number-of-player-participating-test-for-time").access(new AuthorizationNotRoleUser())
+                                .requestMatchers(HttpMethod.GET, "/test-result").hasRole(ConstantConfiguration.ROLE_ADMIN)
+
                                 .requestMatchers(HttpMethod.GET, "/tests/same-category").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/test-result/test/{testResultId}").hasRole(ConstantConfiguration.ROLE_USER)
                                 .requestMatchers(HttpMethod.GET, "/test-result/{testResultId}/question/{questionId}").hasRole(ConstantConfiguration.ROLE_USER)

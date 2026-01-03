@@ -7,6 +7,8 @@ import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultFinish;
 import com.ptitB22CN539.QuizRemake.DTO.Request.TestResult.TestResultStart;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingForTime;
 import com.ptitB22CN539.QuizRemake.DTO.Response.Chart.NumberOfPlayerParticipatingTestResponse;
+import com.ptitB22CN539.QuizRemake.DTO.Response.TestResultResponse;
+import com.ptitB22CN539.QuizRemake.Mapper.TestResultMapper;
 import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerOfQuestionTestEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.AnswerQuestionResultEntity;
 import com.ptitB22CN539.QuizRemake.Model.Entity.QuestionResultEntity;
@@ -18,7 +20,11 @@ import com.ptitB22CN539.QuizRemake.JpaRepository.ITestResultRepository;
 import com.ptitB22CN539.QuizRemake.Service.Test.ITestService;
 import com.ptitB22CN539.QuizRemake.Service.TestResultRedis.ITestResultRedisService;
 import com.ptitB22CN539.QuizRemake.Service.User.IUserService;
+import com.ptitB22CN539.QuizRemake.Utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +45,7 @@ public class TestResultServiceImpl implements ITestResultService {
     private final ITestResultRedisService testResultRedisService;
     private final IUserService userService;
     private final ITestService testService;
+    private final TestResultMapper testResultMapper;
 
     @Override
     @Transactional
@@ -157,5 +164,22 @@ public class TestResultServiceImpl implements ITestResultService {
                 });
         list.sort(Comparator.comparing(NumberOfPlayerParticipatingForTime::getDate));
         return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagedModel<TestResultResponse> getMyTestResults(Integer page, Integer limit) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Pageable pageable = PaginationUtils.getPageable(limit, page);
+        Page<TestResultEntity> entities = this.testResultRepository.findByUser_Email(email, pageable);
+        return new PagedModel<>(entities.map(this.testResultMapper::entityToResponse));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagedModel<TestResultResponse> getAllTestResults(Integer page, Integer limit) {
+        Pageable pageable = PaginationUtils.getPageable(page, limit);
+        Page<TestResultEntity> entities = this.testResultRepository.findAll(pageable);
+        return new PagedModel<>(entities.map(this.testResultMapper::entityToResponse));
     }
 }

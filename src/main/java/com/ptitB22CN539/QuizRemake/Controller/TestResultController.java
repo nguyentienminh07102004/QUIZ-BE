@@ -15,6 +15,7 @@ import com.ptitB22CN539.QuizRemake.Model.Entity.TestResultEntity;
 import com.ptitB22CN539.QuizRemake.Service.TestResult.ITestResultService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,5 +134,29 @@ public class TestResultController {
                 .data(responses)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value = "/my-test-result")
+    public ResponseEntity<APIResponse> getMyTestResult(@RequestParam(required = false) Integer page,
+                                                       @RequestParam(required = false) Integer limit) {
+        PagedModel<TestResultResponse> pagedModel = this.testResultService.getMyTestResults(page, limit);
+        APIResponse response = APIResponse.builder()
+                .message("SUCCESS")
+                .data(pagedModel)
+                .code(200)
+                .build();
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping()
+    public ResponseEntity<APIResponse> getAllTestResults(@RequestParam(required = false) Integer page,
+                                                         @RequestParam(required = false) Integer limit) {
+        PagedModel<TestResultResponse> testResultResponses = this.testResultService.getAllTestResults(page, limit);
+        APIResponse response = APIResponse.builder()
+                .code(200)
+                .message("SUCCESS")
+                .data(testResultResponses)
+                .build();
+        return ResponseEntity.status(200).body(response);
     }
 }

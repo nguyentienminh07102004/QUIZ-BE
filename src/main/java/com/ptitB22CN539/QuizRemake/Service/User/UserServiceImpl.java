@@ -331,7 +331,7 @@ public class UserServiceImpl implements IUserService {
         this.redisTemplate.opsForValue().set("VerifyChangeAdminCode", code);
         this.redisTemplate.opsForValue().set("VerifyChangeAdminEmail", userChangeAdmin.getEmail());
         this.redisTemplate.expire("VerifyChangeAdminCode", Duration.ofSeconds(300));
-        this.emailUtils.sendEmail(userChangeAdmin.getEmail(), "Change admin for you", "VerifyChangeAdmin", Map.of("confirmationLink", "http://localhost:8080/api/v2/users/change-admin?code=%s".formatted(code)));
+        this.emailUtils.sendEmail(userChangeAdmin.getEmail(), "Change admin for you", "VerifyChangeAdmin", Map.of("confirmationLink", "http://localhost:8081/api/v2/users/change-admin?code=%s".formatted(code)));
     }
 
     @Override
